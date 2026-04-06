@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>中美登月计划展望</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 100%;
+            padding: 16px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 24px 16px;
+            background: linear-gradient(180deg, rgba(15, 52, 96, 0.8) 0%, transparent 100%);
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .header .subtitle {
+            font-size: 14px;
+            color: #a8d8ea;
+            opacity: 0.9;
+        }
+
+        .header .meta {
+            font-size: 12px;
+            color: #6b7b8c;
+            margin-top: 8px;
+        }
+
+        /* Core Conclusion Card */
+        .conclusion-card {
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 24px rgba(233, 69, 96, 0.3);
+        }
+
+        .conclusion-card h2 {
+            font-size: 16px;
+            color: #fff;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .conclusion-card p {
+            font-size: 14px;
+            color: #fff;
+            opacity: 0.95;
+            line-height: 1.8;
+        }
+
+        /* Section Cards */
+        .section-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-card h2 {
+            font-size: 18px;
+            color: #fff;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(168, 216, 234, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-card h2 .icon {
+            font-size: 20px;
+        }
+
+        /* Definition Tables */
+        .def-group {
+            margin-bottom: 16px;
+        }
+
+        .def-group h3 {
+            font-size: 14px;
+            color: #a8d8ea;
+            margin-bottom: 8px;
+            padding-left: 8px;
+            border-left: 3px solid #e94560;
+        }
+
+        .def-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .def-table th {
+            background: rgba(168, 216, 234, 0.2);
+            color: #fff;
+            padding: 8px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .def-table td {
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #e8e8e8;
+        }
+
+        .def-table td:first-child {
+            color: #a8d8ea;
+            font-weight: 500;
+        }
+
+        /* Timeline Flow */
+        .timeline-flow {
+            background: rgba(15, 52, 96, 0.5);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 12px 0;
+            font-size: 13px;
+            color: #a8d8ea;
+            text-align: center;
+            line-height: 2;
+        }
+
+        .timeline-flow .arrow {
+            color: #e94560;
+            font-size: 16px;
+        }
+
+        /* Milestone Cards */
+        .milestone-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .milestone-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .milestone-item .label {
+            font-size: 12px;
+            color: #6b7b8c;
+            margin-bottom: 4px;
+        }
+
+        .milestone-item .value {
+            font-size: 14px;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .milestone-item.china {
+            border-left: 3px solid #4ecdc4;
+        }
+
+        .milestone-item.us {
+            border-left: 3px solid #e94560;
+        }
+
+        /* Comparison Table */
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin: 12px 0;
+        }
+
+        .compare-table th {
+            background: rgba(168, 216, 234, 0.15);
+            color: #fff;
+            padding: 10px 8px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .compare-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .compare-table .china-col {
+            color: #4ecdc4;
+        }
+
+        .compare-table .us-col {
+            color: #e94560;
+        }
+
+        /* Issue Cards */
+        .issue-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .issue-item {
+            background: rgba(233, 69, 96, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            border-left: 3px solid #e94560;
+        }
+
+        .issue-item .title {
+            font-size: 13px;
+            color: #e94560;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .issue-item .desc {
+            font-size: 12px;
+            color: #e8e8e8;
+        }
+
+        /* Source Links */
+        .source-section {
+            background: rgba(15, 52, 96, 0.6);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+
+        .source-section h2 {
+            font-size: 16px;
+            color: #fff;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .source-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .source-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .source-item .title {
+            font-size: 14px;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .source-item .meta {
+            font-size: 12px;
+            color: #6b7b8c;
+        }
+
+        .source-item a {
+            font-size: 12px;
+            color: #a8d8ea;
+            text-decoration: none;
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .source-item a:hover {
+            color: #4ecdc4;
+        }
+
+        .source-item a::before {
+            content: "🔗";
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 24px 16px;
+            font-size: 12px;
+            color: #6b7b8c;
+            margin-top: 24px;
+        }
+
+        .footer .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 16px auto;
+            max-width: 200px;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-card, .conclusion-card, .source-item {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        /* Scroll indicator */
+        .scroll-hint {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(233, 69, 96, 0.8);
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .scroll-hint:hover {
+            opacity: 1;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .badge.china {
+            background: #4ecdc4;
+            color: #1a1a2e;
+        }
+
+        .badge.us {
+            background: #e94560;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🚀 中美登月计划展望</h1>
+            <div class="subtitle">载人登月进入"冲刺阶段"</div>
+            <div class="meta">整理时间：2026-04-02 | 覆盖文章：6篇</div>
+        </div>
+
+        <!-- Core Conclusion -->
+        <div class="conclusion-card">
+            <h2>📌 核心结论</h2>
+            <p>中美载人登月进入"冲刺阶段"。中国锚定2030年前目标不动摇，方案稳健务实、技术验证稳步推进。美国阿尔忒弥斯计划大转向，暂停Gateway空间站，三步走建设月球基地，但时间紧迫、SLS成本过高、隔热盾隐患未解。两国风格迥异：中国"稳扎稳打"，美国"激进庞大"。</p>
+        </div>
+
+        <!-- Definitions -->
+        <div class="section-card">
+            <h2><span class="icon">📖</span> 核心概念</h2>
+            
+            <div class="def-group">
+                <h3>中国方案 <span class="badge china">稳健</span></h3>
+                <table class="def-table">
+                    <tr><th>组件</th><th>定义</th></tr>
+                    <tr><td>梦舟飞船</td><td>新一代载人飞船，具备逃逸能力（零高度+最大动压逃逸试验成功）</td></tr>
+                    <tr><td>揽月着陆器</td><td>26吨级载人月球着陆器，登月舱+推进舱组成，ΔV~5100m/s</td></tr>
+                    <tr><td>长征十号</td><td>新一代载人火箭，用于发射梦舟飞船</td></tr>
+                </table>
+            </div>
+
+            <div class="def-group">
+                <h3>美国方案 <span class="badge us">激进</span></h3>
+                <table class="def-table">
+                    <tr><th>组件</th><th>定义</th></tr>
+                    <tr><td>SLS火箭</td><td>太空发射系统，现役最强火箭，高度98.27m，起飞推力3992吨</td></tr>
+                    <tr><td>猎户座飞船</td><td>载人深空飞船，可自主飞行21天，居住空间9.3m³</td></tr>
+                    <tr><td>阿尔忒弥斯</td><td>美国重返月球计划，三步走建设永久月球基地（2026-2036）</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Technical Routes -->
+        <div class="section-card">
+            <h2><span class="icon">🛠️</span> 技术路线</h2>
+            
+            <div class="def-group">
+                <h3>中国路径</h3>
+                <div class="timeline-flow">
+                    嫦娥探路 <span class="arrow">→</span> 鹊桥中继 <span class="arrow">→</span> 长十铺路 <span class="arrow">→</span> 梦舟+揽月 <span class="arrow">→</span> 2030载人登月
+                </div>
+            </div>
+
+            <div class="def-group">
+                <h3>美国路径</h3>
+                <div class="timeline-flow">
+                    阿尔忒弥斯1号(无人) <span class="arrow">→</span> 阿尔忒弥斯2号(载人绕月) <span class="arrow">→</span> 阿尔忒弥斯3/4号(登月) <span class="arrow">→</span> 月球基地 <span class="arrow">→</span> 火星
+                </div>
+            </div>
+        </div>
+
+        <!-- Timeline Comparison -->
+        <div class="section-card">
+            <h2><span class="icon">📅</span> 时间线对比</h2>
+            
+            <div class="milestone-grid">
+                <div class="milestone-item china">
+                    <div class="label">载人登月</div>
+                    <div class="value">2030年前</div>
+                </div>
+                <div class="milestone-item us">
+                    <div class="label">载人登月</div>
+                    <div class="value">2028年(阿尔忒弥斯4号)</div>
+                </div>
+                <div class="milestone-item china">
+                    <div class="label">火星探测</div>
+                    <div class="value">天问三号2028发射</div>
+                </div>
+                <div class="milestone-item us">
+                    <div class="label">火星探测</div>
+                    <div class="value">SR-1自由号2028年底</div>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr><th>维度</th><th class="china-col">中国</th><th class="us-col">美国</th></tr>
+                <tr><td>风险偏好</td><td class="china-col">低风险，稳扎稳打</td><td class="us-col">高风险，快速迭代</td></tr>
+                <tr><td>技术路线</td><td class="china-col">继承经验，渐进验证</td><td class="us-col">商业化主导，激进创新</td></tr>
+                <tr><td>资源投入</td><td class="china-col">国家主导，集中资源</td><td class="us-col">商业竞争，分散风险</td></tr>
+            </table>
+        </div>
+
+        <!-- Issues -->
+        <div class="section-card">
+            <h2><span class="icon">⚠️</span> 关键问题</h2>
+            
+            <div class="issue-list">
+                <div class="issue-item">
+                    <div class="title">SLS成本过高</div>
+                    <div class="desc">12年238亿美元，单次发射40亿美元+，政府问责局认定"不可持续"</div>
+                </div>
+                <div class="issue-item">
+                    <div class="title">隔热盾隐患</div>
+                    <div class="desc">阿尔忒弥斯1号出现开裂脱落，未彻底解决，只调整载入剖面</div>
+                </div>
+                <div class="issue-item">
+                    <div class="title">时间紧迫</div>
+                    <div class="desc">川普任内重返月球，"成败将以月而非年来衡量"</div>
+                </div>
+                <div class="issue-item">
+                    <div class="title">旧硬件复用</div>
+                    <div class="desc">RS-25发动机、助推器都是旧货，"科技考古"，迭代效率低</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sources -->
+        <div class="source-section">
+            <h2>📚 参考来源</h2>
+            <div class="source-list">
+                <div class="source-item">
+                    <div class="title">天问三号火星取样返回任务分析</div>
+                    <div class="meta">2026-03-22 | 技术</div>
+                    <a href="https://weibo.com/ttarticle/x/m/show/id/2309405279022740799868" target="_blank">微博头条 - PhilLeafSpace</a>
+                </div>
+                <div class="source-item">
+                    <div class="title">NASA阿尔忒弥斯计划大变更：三步走建设月球基地</div>
+                    <div class="meta">2026-03-29 | 国际时事</div>
+                    <a href="https://weibo.com/2645044133/5280132572908099" target="_blank">微博 @PhilLeafSpace</a>
+                </div>
+                <div class="source-item">
+                    <div class="title">中国载人月球着陆器"揽月"设计要点汇总</div>
+                    <div class="meta">2026-03-29 | 技术</div>
+                    <a href="https://weibo.com/2645044133/5278567285916966" target="_blank">微博 @PhilLeafSpace</a>
+                </div>
+                <div class="source-item">
+                    <div class="title">专访马晓兵：站在登月的"山脚下"</div>
+                    <div class="meta">2026-03-29 | 技术</div>
+                    <a href="https://mp.weixin.qq.com/s/N12X-F7-F4TeBzlv_8KrFg" target="_blank">微信公众号 - 中国载人航天工程办公室</a>
+                </div>
+                <div class="source-item">
+                    <div class="title">中美2030前航天展望对比分析</div>
+                    <div class="meta">2026-03-29 | 国际时事</div>
+                    <span style="font-size: 12px; color: #6b7b8c;">综合分析（本地知识库整合）</span>
+                </div>
+                <div class="source-item">
+                    <div class="title">详解阿尔忒弥斯2号任务，半世纪后重返月球</div>
+                    <div class="meta">2026-04-02 | 技术</div>
+                    <a href="https://www.bilibili.com/video/BV1Yg9pBpE2r" target="_blank">B站视频</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="divider"></div>
+            <div>整理：nanobot notebook skill</div>
+            <div>数据来源：本地知识库 mcp_kb_search</div>
+            <div style="margin-top: 8px;">2026-04-02</div>
+        </div>
+    </div>
+
+    <!-- Scroll to top -->
+    <div class="scroll-hint" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</div>
+
+    <script>
+        // Hide scroll hint when at top
+        const scrollHint = document.querySelector('.scroll-hint');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY < 100) {
+                scrollHint.style.opacity = '0';
+            } else {
+                scrollHint.style.opacity = '0.8';
+            }
+        });
+    </script>
+</body>
+</html>
