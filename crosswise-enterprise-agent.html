@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrossWise：企业版 OpenClaw 就该我们做 | AI 炼金术</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e4e4e7;
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .header h1 {
+            font-size: 2.2em;
+            color: #f0f0f3;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .header .meta {
+            color: #71717a;
+            font-size: 0.9em;
+        }
+        .header .meta span { margin: 0 10px; }
+        .tag {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.2);
+            color: #818cf8;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin: 5px;
+        }
+        .core-conclusion {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        .core-conclusion h2 {
+            color: #4ade80;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        .core-conclusion p {
+            font-size: 1.1em;
+            color: #d4d4d8;
+        }
+        .section {
+            margin: 40px 0;
+        }
+        .section h2 {
+            color: #f0f0f3;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3b82f6;
+        }
+        .section h3 {
+            color: #a1a1aa;
+            font-size: 1.2em;
+            margin: 25px 0 15px;
+        }
+        .innovation-card {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .innovation-card h4 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+        .innovation-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .innovation-card li {
+            padding: 5px 0;
+            color: #d4d4d8;
+        }
+        .innovation-card li::before {
+            content: "→ ";
+            color: #60a5fa;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        th {
+            background: rgba(99, 102, 241, 0.2);
+            color: #818cf8;
+            font-weight: 600;
+        }
+        td { color: #d4d4d8; }
+        .quote {
+            background: rgba(168, 85, 247, 0.1);
+            border-left: 4px solid #a855f7;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .quote p {
+            color: #c4b5fd;
+            font-style: italic;
+            font-size: 1.05em;
+        }
+        .quote .author {
+            color: #71717a;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        .timeline-item {
+            padding: 10px 0;
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
+        }
+        .timeline-item .time {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #71717a;
+            font-size: 0.85em;
+        }
+        .footer a {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+        .insights {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        .insights h2 {
+            color: #fbbf24;
+            margin-bottom: 15px;
+        }
+        .insights ul {
+            list-style: none;
+        }
+        .insights li {
+            padding: 8px 0;
+            color: #d4d4d8;
+        }
+        .insights li::before {
+            content: "💡 ";
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎙️ CrossWise：企业版 OpenClaw 就该我们做</h1>
+            <div class="meta">
+                <span>小宇宙「AI 炼金术」</span>
+                <span>嘉宾：覃睿</span>
+                <span>2026-04-07</span>
+            </div>
+            <div class="tags">
+                <span class="tag">企业 AI</span>
+                <span class="tag">Agent</span>
+                <span class="tag">OpenClaw</span>
+                <span class="tag">Vibe Coding</span>
+            </div>
+        </div>
+
+        <div class="core-conclusion">
+            <h2>📌 核心结论</h2>
+            <p>企业版 AI Agent 的核心价值不在于"能做什么"，而在于"谁能用"——从 IT 主导转向业务主导，才是跨越鸿沟的关键。CrossWise 通过关系管理、自主意识、协作机制三大创新，解决了企业场景下多智能体协作的核心痛点。</p>
+        </div>
+
+        <div class="section">
+            <h2>🔍 第一性原理分析</h2>
+            <h3>核心议题</h3>
+            <p>本次对话围绕<strong>企业版 AI Agent 产品 CrossWise</strong> 展开，探讨：</p>
+            <ul style="list-style: none; padding-left: 0;">
+                <li>→ 企业 AI 落地的真实场景与变化</li>
+                <li>→ CrossWise 与 OpenClaw 的差异化定位</li>
+                <li>→ 企业场景下的安全、协作、成本控制需求</li>
+                <li>→ 创业公司 vs 大厂在企业 AI 市场的竞争格局</li>
+            </ul>
+
+            <h3>背景脉络</h3>
+            <table>
+                <tr>
+                    <th>项目</th>
+                    <th>说明</th>
+                </tr>
+                <tr>
+                    <td>毕昇（Bisheng）</td>
+                    <td>开源企业 AI 平台，GitHub 11000+ stars，主打工作流、RAG、知识库</td>
+                </tr>
+                <tr>
+                    <td>CrossWise</td>
+                    <td>企业版 OpenClaw，面向组织场景的 AI Agent 平台</td>
+                </tr>
+                <tr>
+                    <td>市场背景</td>
+                    <td>OpenClaw 爆火后，企业对 AI Agent 的需求从"能用"转向"敢用"</td>
+                </tr>
+            </table>
+
+            <h3>参与者</h3>
+            <table>
+                <tr>
+                    <th>说话人</th>
+                    <th>身份/背景</th>
+                </tr>
+                <tr>
+                    <td>任鑫</td>
+                    <td>主持人，云九资本，曾创业京东到家、Get</td>
+                </tr>
+                <tr>
+                    <td>徐文浩</td>
+                    <td>主持人，AI for Shopping CTO，曾创业 BotUp</td>
+                </tr>
+                <tr>
+                    <td>覃睿</td>
+                    <td>嘉宾，毕昇/CrossWise 联合创始人</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>🚀 CrossWise 三大核心创新</h2>
+
+            <div class="innovation-card">
+                <h4>1. 关系管理（Relationship）</h4>
+                <ul>
+                    <li>Agent 需要认识团队所有人、了解他们的角色</li>
+                    <li>知道其他 Agent 能做什么</li>
+                    <li>支持自动导入公司组织架构</li>
+                </ul>
+            </div>
+
+            <div class="innovation-card">
+                <h4>2. 自主意识（Aware）</h4>
+                <ul>
+                    <li>批评 OpenClaw 默认心跳 30 分钟太慢</li>
+                    <li>CrossWise 让 Agent 自主规划工作节奏，扫描间隔 15 秒</li>
+                    <li>支持触发器组合：定时 + on_message + 条件判断</li>
+                    <li>示例：催发票场景——"每分钟提醒直到回复，回复后取消触发器并通知 admin"</li>
+                </ul>
+            </div>
+
+            <div class="innovation-card">
+                <h4>3. 协作机制</h4>
+                <ul>
+                    <li>多人共用 Agent 场景：收集团建意见、汇总后交给财务</li>
+                    <li>审批控制：Agent 做什么操作需要审批</li>
+                    <li>成本控制：细颗粒度控制每人每天的 token 消耗、Agent 生命周期、调用频率</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💬 金句摘录</h2>
+
+            <div class="quote">
+                <p>「以前的 AI 更像诸葛亮，问答、审核、写报告。现在是关羽张飞，可以出去帮你上马打仗。」</p>
+                <div class="author">—— Mars</div>
+            </div>
+
+            <div class="quote">
+                <p>「OpenClaw 进入企业，不是能力不够，而是需要一个资格、一个身份进入组织。」</p>
+                <div class="author">—— 覃睿</div>
+            </div>
+
+            <div class="quote">
+                <p>「我们每个人的能力和资源，都应该 MCP 化，准备好被 Agent 调度。」</p>
+                <div class="author">—— Mars</div>
+            </div>
+
+            <div class="quote">
+                <p>「未来所有需要界面的东西，都是因为那个东西得适配人，所以才需要界面。如果你只要结果，就不需要人参与了。」</p>
+                <div class="author">—— 覃睿</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📊 对话脉络</h2>
+
+            <h3>话题一：企业 AI 落地场景的演变</h3>
+            <div class="timeline-item"><span class="time">[06:43]</span> 覃睿指出最大变量是 OpenClaw——从"诸葛亮"变成"关羽张飞"</div>
+            <div class="timeline-item"><span class="time">[07:07]</span> 智能问数：从精确问数转向"无标准答案的决策支持"</div>
+            <div class="timeline-item"><span class="time">[08:55]</span> 数据治理是企业 AI 落地的最大痛点，90-99% 的企业数据一团糟</div>
+
+            <h3>话题二：CrossWise 与 OpenClaw 的差异化</h3>
+            <div class="timeline-item"><span class="time">[16:30]</span> 核心变化是<strong>使用人群变了</strong>——从 IT 主导转向业务主导</div>
+            <div class="timeline-item"><span class="time">[19:02]</span> 核心定位：<strong>把 Agent 当员工使，而不是当个人助理使</strong></div>
+
+            <h3>话题三：市场竞争格局</h3>
+            <div class="timeline-item"><span class="time">[28:48]</span> 任鑫正面评价：CrossWise 可以"短路一切企业应用"，是百亿美金机会</div>
+            <div class="timeline-item"><span class="time">[28:58]</span> 任鑫负面评价：这像是飞书/钉钉的生意，创业公司抓不住</div>
+            <div class="timeline-item"><span class="time">[30:06]</span> CrossWise 核心开发者只有覃睿一人，开发效率极高</div>
+        </div>
+
+        <div class="insights">
+            <h2>🎯 总结洞察</h2>
+            <ul>
+                <li><strong>范式转变</strong>：企业 AI 的核心变化不是"能做什么"，而是"谁能用"——从 IT 主导转向业务主导</li>
+                <li><strong>三大创新</strong>：关系管理、自主意识、协作机制解决了企业场景的核心痛点</li>
+                <li><strong>创业机会</strong>：大厂缺乏定制化服务基因，Live Coding 削弱了研发投入优势，创业公司仍有窗口期</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>来源：小宇宙播客「AI 炼金术」 | 分析时间：2026-04-07</p>
+            <p style="margin-top: 10px;">
+                <a href="https://www.xiaoyuzhoufm.com/episode/69c5292c704f4c7b57b0cf22" target="_blank">收听原播客 →</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
