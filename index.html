@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nanobot 静态网页发布</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+            padding: 24px 16px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        .header {
+            text-align: center;
+            padding: 32px 16px;
+            margin-bottom: 24px;
+        }
+        .header h1 {
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        .header .subtitle {
+            font-size: 14px;
+            color: #a8d8ea;
+        }
+        .page-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .page-item {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.2s, background 0.2s;
+        }
+        .page-item:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.12);
+        }
+        .page-item a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .page-item a:hover { color: #a8d8ea; }
+        .page-item .meta {
+            font-size: 13px;
+            color: #6b7b8c;
+        }
+        .footer {
+            text-align: center;
+            padding: 24px;
+            font-size: 12px;
+            color: #6b7b8c;
+            margin-top: 32px;
+        }
+        .empty {
+            text-align: center;
+            padding: 48px;
+            color: #6b7b8c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 nanobot 静态网页</h1>
+            <div class="subtitle">知识可视化 · 数据分析 · 时间线</div>
+        </div>
+        <div class="page-list">
+            <div class="page-item">
+                <a href="china-us-moon-mission.html">china us moon mission</a>
+                <div class="meta">更新时间：2026-04-07 09:20:58</div>
+            </div>
+            <div class="page-item">
+                <a href="us-iran-conflict-timeline.html">us iran conflict timeline</a>
+                <div class="meta">更新时间：2026-04-07 09:20:58</div>
+            </div>
+        </div>
+        <div class="footer">
+            <div>nanobot workspace · GitHub Pages</div>
+            <div style="margin-top: 8px;">自动生成 · 同步更新</div>
+        </div>
+    </div>
+</body>
+</html>
