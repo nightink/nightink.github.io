@@ -39,27 +39,33 @@
         .subtitle {
             font-size: 1.1rem;
             color: #a0a0a0;
+            margin-bottom: 20px;
         }
         
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 30px;
-            flex-wrap: wrap;
+        .update-info {
+            font-size: 0.9rem;
+            color: #6b6b6b;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 60px;
         }
         
         .stat-card {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            padding: 20px 30px;
+            padding: 20px;
             text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .stat-value {
             font-size: 2rem;
             font-weight: 700;
-            color: #e94560;
+            color: #ff6b6b;
         }
         
         .stat-label {
@@ -70,434 +76,541 @@
         
         .timeline {
             position: relative;
-            padding: 40px 0;
+            padding-left: 40px;
         }
         
         .timeline::before {
             content: '';
             position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 4px;
-            height: 100%;
-            background: linear-gradient(to bottom, #e94560, #0f3460);
-            border-radius: 2px;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, #ff6b6b, #4ecdc4, #45b7d1);
         }
+        
+        .phase {
+            margin-bottom: 40px;
+        }
+        
+        .phase-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 20px;
+            padding-left: 10px;
+            border-left: 4px solid;
+        }
+        
+        .phase-1 .phase-title { border-color: #ff6b6b; }
+        .phase-2 .phase-title { border-color: #4ecdc4; }
+        .phase-3 .phase-title { border-color: #45b7d1; }
         
         .event {
             position: relative;
-            width: 45%;
-            padding: 25px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 16px;
-            margin-bottom: 40px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .event:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.2);
-        }
-        
-        .event:nth-child(odd) {
-            margin-left: 5%;
-        }
-        
-        .event:nth-child(even) {
-            margin-left: 50%;
+            margin-bottom: 25px;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .event::before {
             content: '';
             position: absolute;
-            top: 30px;
-            width: 20px;
-            height: 20px;
-            background: #e94560;
-            border-radius: 50%;
-            border: 4px solid #1a1a2e;
-        }
-        
-        .event:nth-child(odd)::before {
-            right: -32px;
-        }
-        
-        .event:nth-child(even)::before {
             left: -32px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            border: 2px solid #1a1a2e;
         }
         
         .event-date {
             font-size: 0.85rem;
-            color: #e94560;
-            font-weight: 600;
-            margin-bottom: 10px;
+            color: #6b6b6b;
+            margin-bottom: 5px;
         }
         
         .event-title {
-            font-size: 1.2rem;
-            font-weight: 700;
+            font-size: 1rem;
+            font-weight: 600;
             color: #fff;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
         
-        .event-content {
-            font-size: 0.95rem;
-            color: #c0c0c0;
-            line-height: 1.6;
+        .event-desc {
+            font-size: 0.9rem;
+            color: #a0a0a0;
+            line-height: 1.5;
         }
         
-        .event-tag {
-            display: inline-block;
+        .event.highlight {
+            background: rgba(255, 107, 107, 0.15);
+            border-color: rgba(255, 107, 107, 0.3);
+        }
+        
+        .event.highlight .event-title {
+            color: #ff6b6b;
+        }
+        
+        .future-section {
+            margin-top: 60px;
+            padding: 30px;
+            background: rgba(69, 183, 209, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(69, 183, 209, 0.3);
+        }
+        
+        .future-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #45b7d1;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .scenario-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .scenario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .scenario-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        .probability {
+            font-size: 0.85rem;
             padding: 4px 12px;
             border-radius: 20px;
-            font-size: 0.75rem;
             font-weight: 600;
-            margin-top: 15px;
         }
         
-        .tag-conflict { background: #e94560; color: #fff; }
-        .tag-negotiation { background: #4ecca3; color: #1a1a2e; }
-        .tag-escalation { background: #ff6b6b; color: #fff; }
-        .tag-energy { background: #ffd93d; color: #1a1a2e; }
-        .tag-military { background: #6c5ce7; color: #fff; }
-        .tag-deadline { background: #ff9f43; color: #1a1a2e; }
-        .tag-intelligence { background: #00cec9; color: #1a1a2e; }
+        .prob-high { background: #ff6b6b; color: #fff; }
+        .prob-medium { background: #feca57; color: #1a1a2e; }
+        .prob-medium-high { background: #ff9f43; color: #fff; }
         
-        .phase-divider {
-            text-align: center;
-            margin: 60px 0;
+        .scenario-content h4 {
+            font-size: 0.9rem;
+            color: #45b7d1;
+            margin: 15px 0 8px 0;
+        }
+        
+        .scenario-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .scenario-content li {
+            font-size: 0.85rem;
+            color: #a0a0a0;
+            margin-bottom: 5px;
+            padding-left: 15px;
             position: relative;
         }
         
-        .phase-title {
-            display: inline-block;
-            background: linear-gradient(135deg, #e94560, #0f3460);
-            padding: 15px 40px;
-            border-radius: 30px;
-            font-size: 1.1rem;
-            font-weight: 700;
+        .scenario-content li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #45b7d1;
+        }
+        
+        .key-insights {
+            margin-top: 60px;
+            padding: 25px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+        
+        .insights-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+        }
+        
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .insight-item {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+        }
+        
+        .insight-label {
+            font-size: 0.85rem;
+            color: #6b6b6b;
+            margin-bottom: 5px;
+        }
+        
+        .insight-value {
+            font-size: 0.95rem;
             color: #fff;
         }
         
-        .legend {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
+        .contradictions {
             margin-top: 40px;
-            padding: 20px;
-            background: rgba(255,255,255,0.05);
+            padding: 25px;
+            background: rgba(254, 202, 87, 0.1);
             border-radius: 12px;
-            flex-wrap: wrap;
+            border: 1px solid rgba(254, 202, 87, 0.3);
         }
         
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .contra-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #feca57;
+            margin-bottom: 20px;
+        }
+        
+        .contra-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .contra-table th {
             font-size: 0.85rem;
-        }
-        
-        .legend-color {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-        
-        .key-players {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
-        
-        .player-card {
-            background: rgba(255,255,255,0.08);
-            border-radius: 12px;
-            padding: 15px 25px;
-            text-align: center;
-        }
-        
-        .player-flag {
-            font-size: 2rem;
-        }
-        
-        .player-name {
-            font-size: 0.9rem;
             color: #a0a0a0;
-            margin-top: 5px;
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .contra-table td {
+            font-size: 0.9rem;
+            color: #fff;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .contra-table .topic {
+            color: #feca57;
+            font-weight: 600;
         }
         
         footer {
-            text-align: center;
             margin-top: 60px;
-            padding: 30px;
-            color: #a0a0a0;
+            text-align: center;
+            padding: 20px;
+            color: #6b6b6b;
             font-size: 0.85rem;
         }
         
-        .source-link {
-            color: #4ecca3;
+        footer a {
+            color: #45b7d1;
             text-decoration: none;
         }
         
         @media (max-width: 768px) {
-            .timeline::before {
-                left: 20px;
-            }
-            
-            .event {
-                width: calc(100% - 50px);
-                margin-left: 50px !important;
-            }
-            
-            .event::before {
-                left: -32px !important;
-                right: auto !important;
-            }
-            
-            .stats {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .legend {
-                gap: 10px;
-            }
+            h1 { font-size: 1.8rem; }
+            .timeline { padding-left: 30px; }
+            .event::before { left: -27px; }
+            .scenario-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🇺🇸 美以伊冲突时间线</h1>
-            <p class="subtitle">2026年2月 - 4月 | 冲突持续约 6 周</p>
-            
-            <div class="key-players">
-                <div class="player-card">
-                    <div class="player-flag">🇺🇸</div>
-                    <div class="player-name">美国</div>
-                </div>
-                <div class="player-card">
-                    <div class="player-flag">🇮🇱</div>
-                    <div class="player-name">以色列</div>
-                </div>
-                <div class="player-card">
-                    <div class="player-flag">🇮🇷</div>
-                    <div class="player-name">伊朗</div>
-                </div>
-            </div>
-            
-            <div class="stats">
-                <div class="stat-card">
-                    <div class="stat-value">6+</div>
-                    <div class="stat-label">冲突周数</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">89</div>
-                    <div class="stat-label">伊朗攻击波次</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">3</div>
-                    <div class="stat-label">航母打击群</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">$90+</div>
-                    <div class="stat-label">布伦特原油</div>
-                </div>
-            </div>
+            <h1>🇺🇸🇮🇱 vs 🇮🇷 军事冲突时间线</h1>
+            <p class="subtitle">2026年2月28日 — 4月7日 | 第38天</p>
+            <p class="update-info">最后更新：2026-04-07 | 数据来源：32篇文章/报道</p>
         </header>
         
-        <div class="legend">
-            <div class="legend-item">
-                <div class="legend-color tag-conflict"></div>
-                <span>冲突爆发</span>
+        <!-- 关键数据 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">38</div>
+                <div class="stat-label">冲突天数</div>
             </div>
-            <div class="legend-item">
-                <div class="legend-color tag-negotiation"></div>
-                <span>谈判进展</span>
+            <div class="stat-card">
+                <div class="stat-value">7600+</div>
+                <div class="stat-label">美以空袭次数</div>
             </div>
-            <div class="legend-item">
-                <div class="legend-color tag-escalation"></div>
-                <span>局势升级</span>
+            <div class="stat-card">
+                <div class="stat-value">51波</div>
+                <div class="stat-label">伊朗导弹反击</div>
             </div>
-            <div class="legend-item">
-                <div class="legend-color tag-energy"></div>
-                <span>能源攻防</span>
+            <div class="stat-card">
+                <div class="stat-value">1750死</div>
+                <div class="stat-label">伊朗平民伤亡</div>
             </div>
-            <div class="legend-item">
-                <div class="legend-color tag-military"></div>
-                <span>军事行动</span>
+            <div class="stat-card">
+                <div class="stat-value">6人</div>
+                <div class="stat-label">美军死亡</div>
             </div>
-            <div class="legend-item">
-                <div class="legend-color tag-deadline"></div>
-                <span>最后通牒</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color tag-intelligence"></div>
-                <span>情报动态</span>
+            <div class="stat-card">
+                <div class="stat-value">$105</div>
+                <div class="stat-label">油价（+40%）</div>
             </div>
         </div>
         
+        <!-- 时间线 -->
         <div class="timeline">
-            <!-- Phase 1 -->
-            <div class="phase-divider">
-                <span class="phase-title">第一阶段：冲突爆发（2月）</span>
-            </div>
-            
-            <div class="event">
-                <div class="event-date">2026年2月底</div>
-                <div class="event-title">冲突爆发</div>
-                <div class="event-content">
-                    美伊以冲突开始，美国提出极限施压条件：全面削减中程弹道导弹（300公里以下）、完全停止铀浓缩、交出全部核科学家、停止资助代理组织。
+            <!-- 第一阶段 -->
+            <div class="phase phase-1">
+                <h2 class="phase-title">第一阶段：冲突爆发（2月底）</h2>
+                
+                <div class="event">
+                    <div class="event-date">2月26日</div>
+                    <div class="event-title">第三轮伊核间接谈判破裂</div>
+                    <div class="event-desc">日内瓦谈判失败，核心分歧未解，为后续军事行动埋下伏笔</div>
                 </div>
-                <span class="event-tag tag-conflict">冲突爆发</span>
-            </div>
-            
-            <div class="event">
-                <div class="event-date">2026年2月28日</div>
-                <div class="event-title">美国提出谈判条件</div>
-                <div class="event-content">
-                    美国通过第三方提出3项苛刻条件：交出核科学家、停止铀浓缩、停止资助代理组织（真主党、胡塞武装、哈马斯）。伊朗拒绝接受。
+                
+                <div class="event highlight">
+                    <div class="event-date">2月28日</div>
+                    <div class="event-title">🔥 美以发动"史诗怒火行动"</div>
+                    <div class="event-desc">空袭伊朗核设施，斩首哈梅内伊等高层。战略误判：预期激发内乱，实际激发伊朗团结</div>
                 </div>
-                <span class="event-tag tag-negotiation">谈判条件</span>
             </div>
             
-            <!-- Phase 2 -->
-            <div class="phase-divider">
-                <span class="phase-title">第二阶段：升级与对抗（3月中旬）</span>
-            </div>
-            
-            <div class="event">
-                <div class="event-date">2026年3月17日</div>
-                <div class="event-title">联盟分歧公开化</div>
-                <div class="event-content">
-                    特朗普要求多国派军舰护航霍尔木兹海峡。英国、德国、卢森堡公开拒绝（"不是北约任务"），韩国保留态度。跨大西洋联盟裂痕加深，美国可能回归单边行动。
+            <!-- 第二阶段 -->
+            <div class="phase phase-2">
+                <h2 class="phase-title">第二阶段：升级与对抗（3月）</h2>
+                
+                <div class="event">
+                    <div class="event-date">3月08日</div>
+                    <div class="event-title">伊朗最高领袖更替</div>
+                    <div class="event-desc">阿里·哈梅内伊死亡，穆杰塔巴（小哈梅内伊）继任</div>
                 </div>
-                <span class="event-tag tag-escalation">联盟分歧</span>
-            </div>
-            
-            <div class="event">
-                <div class="event-date">2026年3月18日</div>
-                <div class="event-title">伊朗威胁海湾能源设施</div>
-                <div class="event-content">
-                    伊朗将沙特、阿联酋、卡塔尔核心石油与天然气设施列为合法打击目标，点名5处关键枢纽，敦促员工紧急撤离。能源威慑升级。
+                
+                <div class="event">
+                    <div class="event-date">3月17日</div>
+                    <div class="event-title">特朗普要求多国护航 → 欧洲拒绝</div>
+                    <div class="event-desc">英国、德国、卢森堡公开拒绝参与护航行动</div>
                 </div>
-                <span class="event-tag tag-energy">能源威慑</span>
-            </div>
-            
-            <div class="event">
-                <div class="event-date">2026年3月19日</div>
-                <div class="event-title">美以打击伊朗南帕尔斯气田</div>
-                <div class="event-content">
-                    美以联合打击伊朗经济命脉——南帕尔斯气田（占储量36%、供应70%）。伊朗反击海湾国家石化设施，特朗普发文称"不知情"。
+                
+                <div class="event">
+                    <div class="event-date">3月22日</div>
+                    <div class="event-title">美国降低停火条件</div>
+                    <div class="event-desc">6项条件通过埃及/卡塔尔传递，伊朗未接受</div>
                 </div>
-                <span class="event-tag tag-military">军事打击</span>
-            </div>
-            
-            <div class="event">
-                <div class="event-date">2026年3月22日</div>
-                <div class="event-title">美国降低停火条件</div>
-                <div class="event-content">
-                    通过埃及、卡塔尔、英国向伊朗提出6项停火条件：暂停导弹项目5年、关闭受损反应堆（纳坦兹/伊斯法罕/福尔多）、严格监督核设施、导弹数量限制1000枚。条件放宽但仍苛刻，伊朗公开拒绝。
+                
+                <div class="event">
+                    <div class="event-date">3月24日</div>
+                    <div class="event-title">特朗普透露"谈判进展"</div>
+                    <div class="event-desc">声称小哈梅内伊下落不明，已达成获取核尘埃协议。伊朗随后辟谣</div>
                 </div>
-                <span class="event-tag tag-negotiation">谈判窗口</span>
-            </div>
-            
-            <!-- Phase 3 -->
-            <div class="phase-divider">
-                <span class="phase-title">第三阶段：最后通牒博弈（3月下旬）</span>
-            </div>
-            
-            <div class="event">
-                <div class="event-date">2026年3月23日</div>
-                <div class="event-title">联军战区资产部署</div>
-                <div class="event-content">
-                    美军及盟友中东部署：3个航母打击群（林肯号北阿拉伯海、福特号地中海、布什号诺福克）、法国戴高乐号、2个两栖远征群、200+架作战飞机、79架加油机。
+                
+                <div class="event highlight">
+                    <div class="event-date">3月27日</div>
+                    <div class="event-title">⚠️ 最后通牒一再推迟</div>
+                    <div class="event-desc">48小时→5天→10天，威胁可信度崩塌。特朗普虚构谈判找下台阶</div>
                 </div>
-                <span class="event-tag tag-military">军事部署</span>
-            </div>
-            
-            <div class="event">
-                <div class="event-date">2026年3月23日</div>
-                <div class="event-title">特朗普发布48小时通牒</div>
-                <div class="event-content">
-                    特朗普威胁打击伊朗电厂，发布48小时最后通牒。随后延期5天至3/28，称"谈判进展良好"。
+                
+                <div class="event highlight">
+                    <div class="event-date">3月29日</div>
+                    <div class="event-title">🔥 伊朗击落美军E-3预警机</div>
+                    <div class="event-desc">损失1/6中东预警能力。霍尔木兹海峡半封锁，原油供应缺口1600万桶/日（全球16%）</div>
                 </div>
-                <span class="event-tag tag-deadline">最后通牒</span>
             </div>
             
-            <div class="event">
-                <div class="event-date">2026年3月24日</div>
-                <div class="event-title">特朗普透露谈判进展</div>
-                <div class="event-content">
-                    特朗普采访透露：小哈梅内伊下落不明、美国已达成获取核尘埃协议、伊朗主动联系美国求和（因电厂威胁）、以色列将对协议满意。3/28为最后期限。
+            <!-- 第三阶段 -->
+            <div class="phase phase-3">
+                <h2 class="phase-title">第三阶段：僵持与泥潭化（4月1-7日）</h2>
+                
+                <div class="event">
+                    <div class="event-date">4月1日</div>
+                    <div class="event-title">特朗普全国讲话："艰难阶段已结束"</div>
+                    <div class="event-desc">声称2-3周内完成。同日伊朗发动"真实承诺-4"第89波攻势，100+导弹+无人机打击以色列</div>
                 </div>
-                <span class="event-tag tag-intelligence">情报动态</span>
-            </div>
-            
-            <div class="event">
-                <div class="event-date">2026年3月27日</div>
-                <div class="event-title">最后通牒一再推迟</div>
-                <div class="event-content">
-                    特朗普最后通牒从48小时→5天→10天一再推迟，暴露战略误判：低估伊朗反击强度、军事行动失控、政治压力反噬。从"速战速决"变成"骑虎难下"。
+                
+                <div class="event highlight">
+                    <div class="event-date">4月3日</div>
+                    <div class="event-title">🔥 美军F-15E被击落</div>
+                    <div class="event-desc">一名飞行员获救，一名失踪。标志着战争进入泥潭化新阶段</div>
                 </div>
-                <span class="event-tag tag-escalation">通牒失效</span>
-            </div>
-            
-            <div class="event">
-                <div class="event-date">2026年3月27日</div>
-                <div class="event-title">美军三步走行动推演</div>
-                <div class="event-content">
-                    军事博主推演美军对伊朗行动方案：佯攻能源岛→登陆外围岛→摧毁核设施。核心是"欺骗、速胜、豪赌"三要素，目标是给以色列交代后政治抽身。
+                
+                <div class="event highlight">
+                    <div class="event-date">4月3-4日</div>
+                    <div class="event-title">🔥 美军"最黑暗24小时"</div>
+                    <div class="event-desc">A-10被击落、黑鹰直升机遭袭。特朗普"赢麻了"叙事被戳穿</div>
                 </div>
-                <span class="event-tag tag-military">行动推演</span>
-            </div>
-            
-            <!-- Phase 4 -->
-            <div class="phase-divider">
-                <span class="phase-title">第四阶段：重大升级（4月初）</span>
-            </div>
-            
-            <div class="event">
-                <div class="event-date">2026年4月1日</div>
-                <div class="event-title">伊朗开展"真实承诺-4"行动</div>
-                <div class="event-content">
-                    伊朗开展第89波行动：超100枚重型导弹+攻击无人机+200枚火箭弹。伊朗称"完全掌控"霍尔木兹海峡，击落150架美以无人机。
+                
+                <div class="event">
+                    <div class="event-date">4月4日</div>
+                    <div class="event-title">伊朗拒绝48小时停火提议</div>
+                    <div class="event-desc">认为自己处于有利地位。美以轰炸伊朗电网，德黑兰、阿巴丹等地电网瘫痪</div>
                 </div>
-                <span class="event-tag tag-military">大规模反击</span>
-            </div>
-            
-            <div class="event">
-                <div class="event-date">2026年4月1日</div>
-                <div class="event-title">美军方提交夺取核材料计划</div>
-                <div class="event-content">
-                    美军方提交夺取伊朗460多公斤高丰度浓缩铀计划。特朗普声称美军将"很快撤出"，但如有需要将进行"定点打击"。
+                
+                <div class="event highlight">
+                    <div class="event-date">4月7日</div>
+                    <div class="event-title">🔥 美军特种作战深入伊朗境内捞人</div>
+                    <div class="event-desc">救援行动成功但代价惨重：损失2架A-10、2架黑鹰、4架小鸟直升机、2架MC-130被遗弃炸毁。伊朗在本土作战中错失关键筹码</div>
                 </div>
-                <span class="event-tag tag-military">核材料争夺</span>
             </div>
+        </div>
+        
+        <!-- 未来展望 -->
+        <div class="future-section">
+            <h2 class="future-title">🔮 未来情景推演</h2>
             
-            <div class="event">
-                <div class="event-date">2026年4月2日</div>
-                <div class="event-title">特朗普讲话后伊朗导弹袭向以色列</div>
-                <div class="event-content">
-                    特朗普声称"摧毁了伊朗导弹系统"几分钟后，伊朗立即向以色列发射导弹，显示"针锋相对"姿态。美伊讨论停火换霍尔木兹海峡开放。
+            <div class="scenario-grid">
+                <div class="scenario-card">
+                    <div class="scenario-header">
+                        <span class="scenario-name">场景一：夺岛作战展开</span>
+                        <span class="probability prob-high">概率：高</span>
+                    </div>
+                    <div class="scenario-content">
+                        <h4>触发条件</h4>
+                        <ul>
+                            <li>5月15日DDL逼近</li>
+                            <li>特朗普需要在5月1日前有定论</li>
+                            <li>伊朗继续拒绝停火</li>
+                        </ul>
+                        <h4>可能行动</h4>
+                        <ul>
+                            <li>霍尔木兹海峡4个关键岛屿夺控</li>
+                            <li>有限地面战控制海峡通行</li>
+                        </ul>
+                        <h4>风险</h4>
+                        <ul>
+                            <li>伊朗导弹库存消耗加速</li>
+                            <li>美军高威胁环境作战成本剧增</li>
+                        </ul>
+                    </div>
                 </div>
-                <span class="event-tag tag-escalation">局势升级</span>
+                
+                <div class="scenario-card">
+                    <div class="scenario-header">
+                        <span class="scenario-name">场景二：谈判达成协议</span>
+                        <span class="probability prob-medium">概率：中</span>
+                    </div>
+                    <div class="scenario-content">
+                        <h4>前提条件</h4>
+                        <ul>
+                            <li>伊朗内部达成共识</li>
+                            <li>美国降低核心要求（如允许低水平铀浓缩）</li>
+                            <li>俄罗斯/中国斡旋</li>
+                        </ul>
+                        <h4>障碍</h4>
+                        <ul>
+                            <li>伊朗认为自己处于有利地位</li>
+                            <li>浓缩铀处置成为政治黑洞</li>
+                            <li>革命卫队派系可能阻挠</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="scenario-card">
+                    <div class="scenario-header">
+                        <span class="scenario-name">场景三：长期泥潭化</span>
+                        <span class="probability prob-medium-high">概率：中高</span>
+                    </div>
+                    <div class="scenario-content">
+                        <h4>前提条件</h4>
+                        <ul>
+                            <li>美军战损持续</li>
+                            <li>伊朗基层战力保持</li>
+                            <li>双方都不愿妥协</li>
+                        </ul>
+                        <h4>可能结果</h4>
+                        <ul>
+                            <li>低强度冲突持续</li>
+                            <li>霍尔木兹海峡间歇性封锁</li>
+                            <li>美国霸权面临实质性考验</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
+        </div>
+        
+        <!-- 核心洞察 -->
+        <div class="key-insights">
+            <h2 class="insights-title">💡 核心洞察</h2>
+            
+            <div class="insights-grid">
+                <div class="insight-item">
+                    <div class="insight-label">战略误判</div>
+                    <div class="insight-value">斩首行动激发伊朗团结，而非内乱</div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-label">关键筹码</div>
+                    <div class="insight-value">霍尔木兹海峡半封锁，1600万桶/日缺口</div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-label">叙事破裂</div>
+                    <div class="insight-value">特朗普"赢麻了"演说后48小时内遭遇最黑暗24小时</div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-label">时间窗口</div>
+                    <div class="insight-value">5月15日DDL逼近，夺岛作战大概率近期展开</div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-label">伊朗状态</div>
+                    <div class="insight-value">基层有战力但体系作战能力存疑，各派各说各话</div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-label">美军战损</div>
+                    <div class="insight-value">E-3、F-15E、A-10、黑鹰接连损失，战争机器设计寿命问题暴露</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 矛盾观点 -->
+        <div class="contradictions">
+            <h2 class="contra-title">⚡ 关键矛盾点</h2>
+            
+            <table class="contra-table">
+                <thead>
+                    <tr>
+                        <th>矛盾点</th>
+                        <th>观点A</th>
+                        <th>观点B</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="topic">谈判进展</td>
+                        <td>特朗普："谈判进展顺利"</td>
+                        <td>伊朗辟谣：无谈判</td>
+                    </tr>
+                    <tr>
+                        <td class="topic">战争控制</td>
+                        <td>特朗普："艰难阶段已结束"</td>
+                        <td>美军F-15E+A-10被击落</td>
+                    </tr>
+                    <tr>
+                        <td class="topic">小哈梅内伊状态</td>
+                        <td>"身负重伤，处境极其糟糕"</td>
+                        <td>"未公开亮相，仅发文字"</td>
+                    </tr>
+                    <tr>
+                        <td class="topic">伊朗战力</td>
+                        <td>"基层仍有战力"</td>
+                        <td>"体系作战能力存疑"</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         
         <footer>
-            <p>📊 数据来源：本地知识库检索（10条相关记录）</p>
-            <p>主要来源：微博文章分析 + Axios独家报道 + content-explorer洞察模式</p>
-            <p>整理时间：2026-03-22 至 2026-04-02 | 最后更新：2026-04-06</p>
-            <p style="margin-top: 15px;">
-                <a href="https://nightink.github.io/us-iran-conflict-timeline.html" class="source-link">🔗 GitHub Pages</a>
-            </p>
+            <p>数据来源：32篇文章/报道 | 生成方式：notebook skill v1.1</p>
+            <p>认知笔记：<a href="https://github.com/nightink/nano-base/blob/main/output/notebooks/美以伊军事冲突.md">美以伊军事冲突.md</a></p>
         </footer>
     </div>
 </body>
