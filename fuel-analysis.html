@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>加油数据分析 | 2024-2026</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: #a0a0a0;
+            margin-bottom: 20px;
+        }
+        
+        .update-info {
+            font-size: 0.9rem;
+            color: #6b6b6b;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 60px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4ecdc4;
+        }
+        
+        .stat-value.warning {
+            color: #ff6b6b;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #a0a0a0;
+            margin-top: 5px;
+        }
+        
+        .charts-section {
+            margin-bottom: 60px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+        }
+        
+        .chart-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        
+        .insights-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .insight-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        
+        .insight-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .insight-content {
+            flex: 1;
+        }
+        
+        .insight-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+        
+        .insight-desc {
+            font-size: 0.9rem;
+            color: #a0a0a0;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #6b6b6b;
+            font-size: 0.85rem;
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-container {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚗 加油数据分析</h1>
+            <p class="subtitle">我的小车 | 2024-10 至 2026-04</p>
+            <p class="update-info">数据更新：2026-04-10 | 22 条加油记录</p>
+        </header>
+        
+        <!-- 核心指标 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">8286</div>
+                <div class="stat-label">总里程增长 (km)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">8.72</div>
+                <div class="stat-label">平均油耗 (L/100km)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value warning">27%</div>
+                <div class="stat-label">油价涨幅</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">6452</div>
+                <div class="stat-label">总加油费用 (元)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">7.27</div>
+                <div class="stat-label">平均油价 (元/L)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">25</div>
+                <div class="stat-label">平均加油间隔 (天)</div>
+            </div>
+        </div>
+        
+        <!-- 图表区域 -->
+        <div class="charts-section">
+            <h2 class="section-title">📊 数据可视化</h2>
+            <div class="chart-grid">
+                <div class="chart-card">
+                    <h3 class="chart-title">油价趋势 (2024-2026)</h3>
+                    <div class="chart-container">
+                        <canvas id="priceChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3 class="chart-title">油耗分布 (L/100km)</h3>
+                    <div class="chart-container">
+                        <canvas id="consumptionChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3 class="chart-title">月度加油费用 (元)</h3>
+                    <div class="chart-container">
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3 class="chart-title">加油量分布 (L)</h3>
+                    <div class="chart-container">
+                        <canvas id="volumeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 关键洞察 -->
+        <div class="insights-section">
+            <h2 class="section-title">💡 关键洞察</h2>
+            <div class="insight-item">
+                <div class="insight-icon">📈</div>
+                <div class="insight-content">
+                    <div class="insight-title">油价上涨明显</div>
+                    <div class="insight-desc">从 6.68 元/L 上涨至 8.53 元/L，涨幅 27%。2026年油价明显上涨，最近一次加油达到历史最高。</div>
+                </div>
+            </div>
+            <div class="insight-item">
+                <div class="insight-icon">📊</div>
+                <div class="insight-content">
+                    <div class="insight-title">油耗稳定</div>
+                    <div class="insight-desc">平均油耗 8.72 L/100km，波动范围 5.83 ~ 11.37 L/100km，大部分在正常范围。</div>
+                </div>
+            </div>
+            <div class="insight-item">
+                <div class="insight-icon">⚠️</div>
+                <div class="insight-content">
+                    <div class="insight-title">1次油耗异常</div>
+                    <div class="insight-desc">油耗 11.37 L/100km 异常高，可能是市区拥堵或短途频繁启停导致。</div>
+                </div>
+            </div>
+            <div class="insight-item">
+                <div class="insight-icon">💰</div>
+                <div class="insight-content">
+                    <div class="insight-title">费用可控</div>
+                    <div class="insight-desc">月均费用约 290 元，平均 25 天加油一次，每次约 40 L。</div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>数据分析：nanobot data-analyzer skill | 图表组件：Chart.js</p>
+            <p>数据来源：我的油耗 App 导出数据</p>
+        </footer>
+    </div>
+    
+    <script>
+        // 加油数据
+        const fuelData = {
+            dates: ['2024-10', '2024-11', '2024-12', '2025-01', '2025-02', '2025-04', '2025-05', '2025-06', '2025-07', '2025-08', '2025-09', '2025-11', '2025-12', '2026-01', '2026-02', '2026-03', '2026-04'],
+            prices: [7.45, 7.41, 7.41, 7.74, 7.67, 7.36, 7.07, 6.94, 7.23, 7.23, 7.09, 6.82, 6.86, 6.68, 6.91, 7.05, 8.53],
+            monthlyCost: [361, 359, 300, 550, 550, 453, 600, 300, 300, 543, 600, 300, 300, 300, 300, 234, 350],
+            consumption: [7.60, 11.37, 9.38, 9.36, 7.87, 9.92, 8.20, 7.92, 9.34, 5.83, 8.72, 8.56, 8.45, 8.89, 8.23, 7.98, 8.15],
+            volumes: [48, 48, 40, 39, 32, 40, 42, 43, 41, 47, 42, 44, 44, 45, 43, 33, 41]
+        };
+        
+        // Chart.js 配置
+        Chart.defaults.color = '#a0a0a0';
+        Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+        
+        // 油价趋势图
+        new Chart(document.getElementById('priceChart'), {
+            type: 'line',
+            data: {
+                labels: fuelData.dates,
+                datasets: [{
+                    label: '油价 (元/L)',
+                    data: fuelData.prices,
+                    borderColor: '#4ecdc4',
+                    backgroundColor: 'rgba(78, 205, 196, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#4ecdc4'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        min: 6,
+                        max: 9,
+                        title: { display: true, text: '元/L' }
+                    }
+                }
+            }
+        });
+        
+        // 油耗分布图
+        new Chart(document.getElementById('consumptionChart'), {
+            type: 'bar',
+            data: {
+                labels: fuelData.dates.slice(-10),
+                datasets: [{
+                    label: '油耗 (L/100km)',
+                    data: fuelData.consumption.slice(-10),
+                    backgroundColor: fuelData.consumption.slice(-10).map(v => 
+                        v > 10 ? '#ff6b6b' : v < 7 ? '#4ecdc4' : '#45b7d1'
+                    ),
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        min: 5,
+                        max: 12,
+                        title: { display: true, text: 'L/100km' }
+                    }
+                }
+            }
+        });
+        
+        // 月度费用图
+        new Chart(document.getElementById('monthlyChart'), {
+            type: 'bar',
+            data: {
+                labels: fuelData.dates,
+                datasets: [{
+                    label: '费用 (元)',
+                    data: fuelData.monthlyCost,
+                    backgroundColor: '#f9ca24',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        title: { display: true, text: '元' }
+                    }
+                }
+            }
+        });
+        
+        // 加油量分布图
+        new Chart(document.getElementById('volumeChart'), {
+            type: 'bar',
+            data: {
+                labels: fuelData.dates.slice(-10),
+                datasets: [{
+                    label: '加油量 (L)',
+                    data: fuelData.volumes.slice(-10),
+                    backgroundColor: '#a55eea',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        min: 20,
+                        max: 50,
+                        title: { display: true, text: 'L' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
