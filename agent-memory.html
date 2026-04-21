@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Memory 技术笔记</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(180deg, rgba(26,26,62,0.9) 0%, transparent 100%);
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+        .header h1 { font-size: 28px; color: #7dd3fc; margin-bottom: 10px; }
+        .header .subtitle { font-size: 14px; color: #94a3b8; }
+        .tag { display: inline-block; padding: 4px 12px; background: #1e3a5f; border-radius: 20px; font-size: 12px; margin: 5px; }
+        .section { background: rgba(30,30,60,0.6); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .section h2 { color: #7dd3fc; font-size: 20px; margin-bottom: 15px; border-bottom: 2px solid #3b82f6; padding-bottom: 8px; }
+        .section h3 { color: #a5b4fc; font-size: 16px; margin: 15px 0 10px; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #334155; }
+        th { background: #1e3a5f; color: #7dd3fc; }
+        tr:hover { background: rgba(59,130,246,0.1); }
+        .quote { background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); padding: 15px 20px; border-radius: 8px; border-left: 4px solid #3b82f6; margin: 15px 0; }
+        .quote p { color: #cbd5e1; font-style: italic; }
+        .flow { background: #0f172a; padding: 15px; border-radius: 8px; font-family: monospace; white-space: pre; color: #94a3b8; margin: 15px 0; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 15px 0; }
+        .card { background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155; }
+        .card h4 { color: #7dd3fc; margin-bottom: 8px; }
+        .card p { color: #94a3b8; font-size: 13px; }
+        .refs { background: #0f172a; padding: 15px; border-radius: 8px; }
+        .refs a { color: #7dd3fc; text-decoration: none; display: block; padding: 8px 0; border-bottom: 1px solid #1e293b; }
+        .refs a:hover { color: #a5f3fc; }
+        .footer { text-align: center; padding: 30px; color: #64748b; font-size: 12px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🧠 Agent Memory 技术笔记</h1>
+        <div class="subtitle">从"失忆"到"进化"的记忆系统演进</div>
+        <div style="margin-top: 15px;">
+            <span class="tag">三维分类框架</span>
+            <span class="tag">AutoDream</span>
+            <span class="tag">Memento-Skills</span>
+            <span class="tag">Mem0</span>
+        </div>
+    </div>
+
+    <div class="quote">
+        <p>Agent 记忆系统不是简单的"存储-检索"，而是形式×功能×动态的三维架构。核心演进路径：从"失忆"→"自愈"→"进化"，关键突破是"睡眠整理"机制和"技能即记忆"范式。</p>
+    </div>
+
+    <div class="section">
+        <h2>一、三维分类框架</h2>
+        <table>
+            <tr><th>维度</th><th>分类</th><th>说明</th><th>技术实现</th></tr>
+            <tr><td><strong>形式</strong></td><td>词元级</td><td>文本 token 存储</td><td>RAG、向量数据库</td></tr>
+            <tr><td></td><td>参数记忆</td><td>内化于模型权重</td><td>微调、训练</td></tr>
+            <tr><td></td><td>潜在记忆</td><td>隐藏状态压缩</td><td>RNN hidden state</td></tr>
+            <tr><td><strong>功能</strong></td><td>事实记忆</td><td>"是什么"的知识</td><td>世界知识、领域知识</td></tr>
+            <tr><td></td><td>经验记忆</td><td>"怎么做"的知识</td><td>技能、策略、教训</td></tr>
+            <tr><td></td><td>工作记忆</td><td>临时上下文</td><td>对话历史</td></tr>
+            <tr><td><strong>动态</strong></td><td>形成→演化→检索</td><td>记忆生命周期</td><td>编码、巩固、遗忘、提取</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>二、问题诊断</h2>
+        <h3>多 Agent 记忆隔离问题</h3>
+        <table>
+            <tr><th>问题</th><th>根因</th><th>影响</th></tr>
+            <tr><td>上下文丢失</td><td>Agent 实例独立</td><td>每次重启"失忆"</td></tr>
+            <tr><td>重复沟通</td><td>无共享记忆层</td><td>反复交代背景</td></tr>
+            <tr><td>Token 消耗高</td><td>全量记录无筛选</td><td>成本失控</td></tr>
+            <tr><td>记忆无重点</td><td>无差别保存</td><td>关键信息淹没</td></tr>
+        </table>
+        <div class="quote">
+            <p>记忆隔离是特性不是 bug：保护隐私和专注度，问题在缺少共享层。</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>三、解决方案对比</h2>
+        <div class="card-grid">
+            <div class="card">
+                <h4>AutoDream</h4>
+                <p>后台整理机制，像人类睡眠一样周期性压缩、修剪、刷新记忆</p>
+                <div class="flow">merge → prune → refresh → compact</div>
+            </div>
+            <div class="card">
+                <h4>Memento-Skills</h4>
+                <p>技能即记忆，通过"读-写-反思"循环实现无需重新训练的学习</p>
+                <p style="color: #7dd3fc;">GAIA +13.7%, HLE +20.8%</p>
+            </div>
+            <div class="card">
+                <h4>Mem0</h4>
+                <p>向量检索 + 关键信息捕捉，支持跨会话/跨 Agent</p>
+                <p>Token 消耗低，检索效率高</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>四、演进路径</h2>
+        <div class="flow">阶段1: 失忆（无记忆）
+    ↓
+阶段2: 临时记忆（单会话）
+    ↓
+阶段3: 持久记忆（跨会话）
+    ↓
+阶段4: 自愈记忆（AutoDream）
+    ↓
+阶段5: 进化记忆（技能即记忆）</div>
+    </div>
+
+    <div class="section">
+        <h2>五、关键突破</h2>
+        <table>
+            <tr><th>突破</th><th>说明</th><th>代表方案</th></tr>
+            <tr><td>睡眠整理</td><td>后台压缩、修剪、刷新</td><td>AutoDream</td></tr>
+            <tr><td>行为对齐检索</td><td>"执行成功"比"文本相似"更重要</td><td>Memento-Skills</td></tr>
+            <tr><td>技能即记忆</td><td>技能作为外部记忆单元</td><td>Memento-Skills</td></tr>
+            <tr><td>向量检索</td><td>精确检索，不加载全量历史</td><td>Mem0</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>六、实践建议</h2>
+        <table>
+            <tr><th>项目周期</th><th>Agent 数量</th><th>推荐方案</th></tr>
+            <tr><td>> 1 周</td><td>≥ 3</td><td>记忆文件夹 + 项目经理 Agent</td></tr>
+            <tr><td>> 1 周</td><td>< 3</td><td>记忆文件夹</td></tr>
+            <tr><td>< 1 周</td><td>任意</td><td>简单文档</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>七、参考资料</h2>
+        <div class="refs">
+            <a href="https://mp.weixin.qq.com/s/rvPCSO8LlUQ6iW52NCXZgQ" target="_blank">Agent Memory 功能与形式深度解析 → 微信原文</a>
+            <a href="https://mp.weixin.qq.com/s/SEzSl8PHjcAtdAjoKXCAHw" target="_blank">Memento-Skills: 技能即记忆的 Agent 进化方案 → 微信原文</a>
+            <a href="https://mp.weixin.qq.com/s/9gcyRO_k4dkWRqsszOCiWQ" target="_blank">OpenClaw 内置 Mem0 记忆系统优化 → 微信原文</a>
+            <a href="https://www.youtube.com/watch?v=LrgfmZkl3nc" target="_blank">Claude Code Memory 2.0 - AutoDream → YouTube 视频</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        整理时间：2026-04-21 | 索引 ID：20260421-020
+    </div>
+</div>
+</body>
+</html>
