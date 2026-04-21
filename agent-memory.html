@@ -7,52 +7,58 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
-            color: #e8e8e8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif;
+            background: #0d1117;
+            color: #c9d1d9;
             min-height: 100vh;
-            line-height: 1.6;
+            line-height: 1.7;
         }
-        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 860px; margin: 0 auto; padding: 24px; }
         .header {
             text-align: center;
-            padding: 40px 20px;
-            background: linear-gradient(180deg, rgba(26,26,62,0.9) 0%, transparent 100%);
-            border-radius: 16px;
-            margin-bottom: 30px;
+            padding: 48px 24px;
+            background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            margin-bottom: 32px;
         }
-        .header h1 { font-size: 28px; color: #7dd3fc; margin-bottom: 10px; }
-        .header .subtitle { font-size: 14px; color: #94a3b8; }
-        .tag { display: inline-block; padding: 4px 12px; background: #1e3a5f; border-radius: 20px; font-size: 12px; margin: 5px; }
-        .section { background: rgba(30,30,60,0.6); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
-        .section h2 { color: #7dd3fc; font-size: 20px; margin-bottom: 15px; border-bottom: 2px solid #3b82f6; padding-bottom: 8px; }
-        .section h3 { color: #a5b4fc; font-size: 16px; margin: 15px 0 10px; }
-        .section h4 { color: #cbd5e1; font-size: 14px; margin: 12px 0 8px; }
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
-        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #334155; }
-        th { background: #1e3a5f; color: #7dd3fc; }
-        tr:hover { background: rgba(59,130,246,0.1); }
-        .quote { background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); padding: 15px 20px; border-radius: 8px; border-left: 4px solid #3b82f6; margin: 15px 0; }
-        .quote p { color: #cbd5e1; font-style: italic; }
-        .flow { background: #0f172a; padding: 15px; border-radius: 8px; font-family: monospace; white-space: pre; color: #94a3b8; margin: 15px 0; overflow-x: auto; }
-        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin: 15px 0; }
-        .card { background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155; }
-        .card h4 { color: #7dd3fc; margin-bottom: 8px; }
-        .card p { color: #94a3b8; font-size: 13px; margin: 5px 0; }
-        .card .metric { color: #7dd3fc; font-weight: bold; }
-        .refs { background: #0f172a; padding: 15px; border-radius: 8px; }
-        .refs a { color: #7dd3fc; text-decoration: none; display: block; padding: 8px 0; border-bottom: 1px solid #1e293b; }
-        .refs a:hover { color: #a5f3fc; }
-        .footer { text-align: center; padding: 30px; color: #64748b; font-size: 12px; }
-        .highlight { color: #7dd3fc; font-weight: bold; }
-        .warning { color: #f87171; }
-        .success { color: #4ade80; }
-        ul { margin: 10px 0; padding-left: 20px; }
-        li { margin: 5px 0; color: #94a3b8; }
-        .checklist { background: #0f172a; padding: 15px; border-radius: 8px; margin: 15px 0; }
-        .checklist li { list-style: none; padding: 8px 0; border-bottom: 1px solid #1e293b; }
+        .header h1 { font-size: 32px; color: #58a6ff; margin-bottom: 12px; font-weight: 600; }
+        .header .subtitle { font-size: 15px; color: #8b949e; }
+        .tag { display: inline-block; padding: 5px 14px; background: #21262d; border: 1px solid #30363d; border-radius: 20px; font-size: 13px; margin: 4px; color: #8b949e; }
+        .tag:hover { border-color: #58a6ff; color: #58a6ff; }
+        .section { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+        .section h2 { color: #58a6ff; font-size: 20px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #30363d; font-weight: 600; }
+        .section h3 { color: #8b949e; font-size: 16px; margin: 20px 0 12px; font-weight: 500; }
+        .section h4 { color: #c9d1d9; font-size: 14px; margin: 16px 0 8px; font-weight: 500; }
+        table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+        th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid #21262d; }
+        th { background: #21262d; color: #8b949e; font-weight: 500; }
+        tr:hover { background: #21262d; }
+        .quote { background: #21262d; border-left: 3px solid #58a6ff; padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 16px 0; }
+        .quote p { color: #8b949e; font-style: italic; }
+        .flow { background: #0d1117; border: 1px solid #30363d; padding: 16px 20px; border-radius: 8px; font-family: 'SF Mono', 'Fira Code', monospace; white-space: pre; color: #8b949e; margin: 16px 0; overflow-x: auto; font-size: 13px; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 16px 0; }
+        .card { background: #21262d; border: 1px solid #30363d; padding: 18px; border-radius: 8px; }
+        .card h4 { color: #58a6ff; margin-bottom: 10px; font-size: 15px; }
+        .card p { color: #8b949e; font-size: 13px; margin: 6px 0; }
+        .card .metric { color: #58a6ff; font-weight: 600; }
+        .refs { background: #21262d; border-radius: 8px; padding: 16px; }
+        .refs a { color: #58a6ff; text-decoration: none; display: block; padding: 10px 0; border-bottom: 1px solid #30363d; font-size: 14px; }
+        .refs a:last-child { border-bottom: none; }
+        .refs a:hover { color: #79c0ff; }
+        .footer { text-align: center; padding: 32px; color: #484f58; font-size: 13px; }
+        .highlight { color: #58a6ff; font-weight: 500; }
+        .warn { color: #d29922; }
+        .good { color: #3fb950; }
+        ul { margin: 12px 0; padding-left: 24px; }
+        li { margin: 8px 0; color: #8b949e; }
+        .checklist { background: #21262d; border-radius: 8px; padding: 16px 20px; margin: 16px 0; }
+        .checklist li { list-style: none; padding: 10px 0; border-bottom: 1px solid #30363d; }
         .checklist li:last-child { border-bottom: none; }
-        .phase { display: inline-block; padding: 2px 8px; background: #3b82f6; color: white; border-radius: 4px; font-size: 12px; margin-right: 8px; }
+        .phase { display: inline-block; padding: 3px 10px; background: #238636; color: #fff; border-radius: 4px; font-size: 12px; margin-right: 10px; font-weight: 500; }
+        .phase-q { background: #1f6feb; }
+        a { color: #58a6ff; }
+        a:hover { color: #79c0ff; }
     </style>
 </head>
 <body>
@@ -60,7 +66,7 @@
     <div class="header">
         <h1>🧠 Agent Memory 技术笔记</h1>
         <div class="subtitle">从"失忆"到"进化"的记忆系统演进 | 整理时间：2026-04-21</div>
-        <div style="margin-top: 15px;">
+        <div style="margin-top: 18px;">
             <span class="tag">三维分类框架</span>
             <span class="tag">AutoDream</span>
             <span class="tag">Memento-Skills</span>
@@ -73,7 +79,6 @@
         <p>Agent 记忆系统不是简单的"存储-检索"，而是形式×功能×动态的三维架构。核心演进路径：从"失忆"→"自愈"→"进化"，关键突破是"睡眠整理"机制和"技能即记忆"范式。</p>
     </div>
 
-    <!-- 第一部分：三维分类框架 -->
     <div class="section">
         <h2>一、记忆系统的三维分类框架</h2>
         
@@ -88,12 +93,12 @@
         <h3>1.2 三维分类框架</h3>
         <table>
             <tr><th>维度</th><th>分类</th><th>说明</th><th>技术实现</th></tr>
-            <tr><td><strong>形式层面</strong></td><td>词元级记忆 (token-level)</td><td>文本 token 存储</td><td>RAG、向量数据库</td></tr>
-            <tr><td></td><td>参数记忆 (parametric)</td><td>内化于模型权重</td><td>微调、训练</td></tr>
-            <tr><td></td><td>潜在记忆 (latent)</td><td>隐藏状态压缩表示</td><td>RNN hidden state</td></tr>
-            <tr><td><strong>功能层面</strong></td><td>事实记忆 (factual)</td><td>"是什么"的知识</td><td>世界知识、领域知识</td></tr>
-            <tr><td></td><td>经验记忆 (experiential)</td><td>"怎么做"的知识</td><td>技能、策略、教训</td></tr>
-            <tr><td></td><td>工作记忆 (working)</td><td>当前任务临时上下文</td><td>对话历史</td></tr>
+            <tr><td><strong>形式层面</strong></td><td>词元级记忆</td><td>文本 token 存储</td><td>RAG、向量数据库</td></tr>
+            <tr><td></td><td>参数记忆</td><td>内化于模型权重</td><td>微调、训练</td></tr>
+            <tr><td></td><td>潜在记忆</td><td>隐藏状态压缩表示</td><td>RNN hidden state</td></tr>
+            <tr><td><strong>功能层面</strong></td><td>事实记忆</td><td>"是什么"的知识</td><td>世界知识、领域知识</td></tr>
+            <tr><td></td><td>经验记忆</td><td>"怎么做"的知识</td><td>技能、策略、教训</td></tr>
+            <tr><td></td><td>工作记忆</td><td>当前任务临时上下文</td><td>对话历史</td></tr>
             <tr><td><strong>动态层面</strong></td><td>形成 → 演化 → 检索</td><td>记忆生命周期</td><td>编码、巩固、遗忘、提取</td></tr>
         </table>
 
@@ -108,10 +113,9 @@
 工作记忆 → 需要快速更新 → 上下文窗口 + 注意力机制</div>
     </div>
 
-    <!-- 第二部分：问题诊断 -->
     <div class="section">
         <h2>二、记忆系统的问题诊断</h2>
-        
+
         <h3>2.1 多 Agent 记忆隔离问题</h3>
         <table>
             <tr><th>问题</th><th>根因</th><th>影响</th></tr>
@@ -136,17 +140,16 @@
         </div>
     </div>
 
-    <!-- 第三部分：解决方案 -->
     <div class="section">
         <h2>三、记忆系统的解决方案</h2>
 
         <h3>3.1 方案对比评估</h3>
         <table>
             <tr><th>方案</th><th>实施成本</th><th>效果</th><th>可持续性</th><th>适用场景</th></tr>
-            <tr><td><strong>项目文档</strong></td><td>⭐⭐ 低</td><td>⭐⭐⭐⭐ 高</td><td>⭐⭐⭐⭐ 好</td><td>个人短期项目</td></tr>
-            <tr><td><strong>项目经理 Agent</strong></td><td>⭐⭐⭐ 中</td><td>⭐⭐⭐ 中</td><td>⭐⭐ 一般</td><td>团队多 Agent</td></tr>
-            <tr><td><strong>记忆文件夹</strong></td><td>⭐⭐⭐⭐ 高</td><td>⭐⭐⭐⭐⭐ 最高</td><td>⭐⭐⭐⭐⭐ 最好</td><td>个人长期项目</td></tr>
-            <tr><td><strong>群聊</strong></td><td>⭐ 最低</td><td>⭐⭐ 短期有效</td><td>⭐ 差</td><td>快速原型验证</td></tr>
+            <tr><td><strong>项目文档</strong></td><td>低</td><td>高</td><td>好</td><td>个人短期项目</td></tr>
+            <tr><td><strong>项目经理 Agent</strong></td><td>中</td><td>中</td><td>一般</td><td>团队多 Agent</td></tr>
+            <tr><td><strong>记忆文件夹</strong></td><td>高</td><td>最高</td><td>最好</td><td>个人长期项目</td></tr>
+            <tr><td><strong>群聊</strong></td><td>最低</td><td>短期有效</td><td>差</td><td>快速原型验证</td></tr>
         </table>
 
         <h3>3.2 Mem0 记忆优化方案</h3>
@@ -154,13 +157,13 @@
             <tr><th>能力</th><th>原生记忆</th><th>Mem0 记忆</th></tr>
             <tr><td><strong>记录方式</strong></td><td>全量保存</td><td>关键信息捕捉</td></tr>
             <tr><td><strong>检索方式</strong></td><td>文件读取</td><td>向量检索</td></tr>
-            <tr><td><strong>Token 消耗</strong></td><td class="warning">高</td><td class="success">低</td></tr>
-            <tr><td><strong>跨会话</strong></td><td class="warning">不支持</td><td class="success">支持</td></tr>
-            <tr><td><strong>跨 Agent</strong></td><td class="warning">不支持</td><td class="success">支持</td></tr>
+            <tr><td><strong>Token 消耗</strong></td><td class="warn">高</td><td class="good">低</td></tr>
+            <tr><td><strong>跨会话</strong></td><td class="warn">不支持</td><td class="good">支持</td></tr>
+            <tr><td><strong>跨 Agent</strong></td><td class="warn">不支持</td><td class="good">支持</td></tr>
         </table>
 
         <h3>3.3 Claude Code Memory 2.0（AutoDream）</h3>
-        <p style="color: #94a3b8; margin: 10px 0;"><strong>核心机制</strong>：后台整理（dreaming），像人类睡眠一样周期性压缩、修剪、刷新记忆。</p>
+        <p style="color: #8b949e; margin: 12px 0;"><strong>核心机制</strong>：后台整理（dreaming），像人类睡眠一样周期性压缩、修剪、刷新记忆。</p>
 
         <table>
             <tr><th>传统 Memory</th><th>AutoDream</th></tr>
@@ -177,7 +180,7 @@ refresh → 刷新过时信息
 compact → 压缩冗余表达</div>
 
         <h3>3.4 Memento-Skills（技能即记忆）</h3>
-        <p style="color: #94a3b8; margin: 10px 0;"><strong>核心创新</strong>：将技能作为外部记忆，通过"读-写-反思"循环实现无需重新训练的学习。</p>
+        <p style="color: #8b949e; margin: 12px 0;"><strong>核心创新</strong>：将技能作为外部记忆，通过"读-写-反思"循环实现无需重新训练的学习。</p>
 
         <div class="flow">任务输入 → 技能路由器检索 → 执行 → 法官评估 → 反思更新
     ↑                                              ↓
@@ -204,7 +207,6 @@ compact → 压缩冗余表达</div>
         </div>
     </div>
 
-    <!-- 第四部分：演进趋势 -->
     <div class="section">
         <h2>四、记忆系统的演进趋势</h2>
 
@@ -238,7 +240,6 @@ compact → 压缩冗余表达</div>
         </table>
     </div>
 
-    <!-- 第五部分：成本效益分析 -->
     <div class="section">
         <h2>五、成本效益分析</h2>
 
@@ -246,42 +247,41 @@ compact → 压缩冗余表达</div>
         <table>
             <tr><th>记忆类型</th><th>存储成本</th><th>计算成本</th><th>维护成本</th></tr>
             <tr><td><strong>词元级记忆</strong></td><td>高（需向量数据库）</td><td>中（检索 + 重排序）</td><td>中（需定期更新）</td></tr>
-            <tr><td><strong>参数记忆</strong></td><td>低（模型权重内）</td><td>低（前向传播）</td><td class="warning">高（需重新训练）</td></tr>
-            <tr><td><strong>潜在记忆</strong></td><td>低（隐藏状态）</td><td>中（注意力计算）</td><td class="success">低（自动管理）</td></tr>
+            <tr><td><strong>参数记忆</strong></td><td>低（模型权重内）</td><td>低（前向传播）</td><td class="warn">高（需重新训练）</td></tr>
+            <tr><td><strong>潜在记忆</strong></td><td>低（隐藏状态）</td><td>中（注意力计算）</td><td class="good">低（自动管理）</td></tr>
         </table>
 
         <h3>5.2 效益提升</h3>
         <table>
             <tr><th>效益维度</th><th>提升幅度</th><th>说明</th></tr>
-            <tr><td><strong>推理能力</strong></td><td class="success">+40-60%</td><td>长时推理任务显著改善</td></tr>
-            <tr><td><strong>适应能力</strong></td><td class="success">+30-50%</td><td>新环境/新任务适应更快</td></tr>
-            <tr><td><strong>一致性</strong></td><td class="success">+50-70%</td><td>多轮对话/多任务保持一致性</td></tr>
-            <tr><td><strong>个性化</strong></td><td class="success">+60-80%</td><td>基于用户历史记忆定制服务</td></tr>
+            <tr><td><strong>推理能力</strong></td><td class="good">+40-60%</td><td>长时推理任务显著改善</td></tr>
+            <tr><td><strong>适应能力</strong></td><td class="good">+30-50%</td><td>新环境/新任务适应更快</td></tr>
+            <tr><td><strong>一致性</strong></td><td class="good">+50-70%</td><td>多轮对话/多任务保持一致性</td></tr>
+            <tr><td><strong>个性化</strong></td><td class="good">+60-80%</td><td>基于用户历史记忆定制服务</td></tr>
         </table>
 
         <h3>5.3 风险评估</h3>
         <table>
             <tr><th>风险</th><th>概率</th><th>影响</th><th>缓解措施</th></tr>
-            <tr><td><strong>记忆污染</strong></td><td>中</td><td class="warning">高</td><td>记忆质量审核 + 版本控制</td></tr>
+            <tr><td><strong>记忆污染</strong></td><td>中</td><td class="warn">高</td><td>记忆质量审核 + 版本控制</td></tr>
             <tr><td><strong>检索失败</strong></td><td>中</td><td>中</td><td>多路召回 + 降级策略</td></tr>
-            <tr><td><strong>隐私泄露</strong></td><td>低</td><td class="warning">高</td><td>加密存储 + 访问控制</td></tr>
-            <tr><td><strong>记忆过载</strong></td><td class="warning">高</td><td>中</td><td>记忆压缩 + 遗忘机制</td></tr>
+            <tr><td><strong>隐私泄露</strong></td><td>低</td><td class="warn">高</td><td>加密存储 + 访问控制</td></tr>
+            <tr><td><strong>记忆过载</strong></td><td class="warn">高</td><td>中</td><td>记忆压缩 + 遗忘机制</td></tr>
             <tr><td><strong>冲突不一致</strong></td><td>中</td><td>中</td><td>冲突检测 + 优先级规则</td></tr>
         </table>
     </div>
 
-    <!-- 第六部分：实践建议 -->
     <div class="section">
         <h2>六、实践建议</h2>
 
         <h3>6.1 开发者实施 Checklist</h3>
         <div class="checklist">
             <ul>
-                <li><span class="phase">Q1</span> 项目周期 > 1 周？ → 建记忆文件夹 | 否 → 简单文档即可</li>
-                <li><span class="phase">Q2</span> Agent 数量 ≥ 3？ → 考虑项目经理 Agent | 否 → 文档足够</li>
-                <li><span class="phase">Q3</span> 有敏感数据？ → 保持隔离 + 按需共享 | 否 → 可全共享</li>
-                <li><span class="phase">Q4</span> 工具支持群聊？ → 短期协作可用 | 否 → 依赖文档</li>
-                <li><span class="phase">Q5</span> 团队多人协作？ → 必须文档化 | 否 → 个人可简化</li>
+                <li><span class="phase phase-q">Q1</span> 项目周期 > 1 周？ → 建记忆文件夹 | 否 → 简单文档即可</li>
+                <li><span class="phase phase-q">Q2</span> Agent 数量 ≥ 3？ → 考虑项目经理 Agent | 否 → 文档足够</li>
+                <li><span class="phase phase-q">Q3</span> 有敏感数据？ → 保持隔离 + 按需共享 | 否 → 可全共享</li>
+                <li><span class="phase phase-q">Q4</span> 工具支持群聊？ → 短期协作可用 | 否 → 依赖文档</li>
+                <li><span class="phase phase-q">Q5</span> 团队多人协作？ → 必须文档化 | 否 → 个人可简化</li>
             </ul>
         </div>
 
@@ -315,27 +315,26 @@ compact → 压缩冗余表达</div>
             <tr><th>维度</th><th>nanobot</th><th>Mem0</th><th>AutoDream</th></tr>
             <tr><td><strong>分层设计</strong></td><td>三层架构</td><td>向量检索</td><td>后台整理</td></tr>
             <tr><td><strong>检索方式</strong></td><td>grep + read_file</td><td>向量检索</td><td>自动筛选</td></tr>
-            <tr><td><strong>跨会话</strong></td><td class="success">支持（文件持久化）</td><td class="success">支持（云端）</td><td class="success">支持</td></tr>
-            <tr><td><strong>跨 Agent</strong></td><td class="warning">不支持</td><td class="success">支持</td><td class="warning">不支持</td></tr>
-            <tr><td><strong>隐私保护</strong></td><td class="success">高（本地）</td><td>中（云端）</td><td class="success">高（本地）</td></tr>
+            <tr><td><strong>跨会话</strong></td><td class="good">支持（文件持久化）</td><td class="good">支持（云端）</td><td class="good">支持</td></tr>
+            <tr><td><strong>跨 Agent</strong></td><td class="warn">不支持</td><td class="good">支持</td><td class="warn">不支持</td></tr>
+            <tr><td><strong>隐私保护</strong></td><td class="good">高（本地）</td><td>中（云端）</td><td class="good">高（本地）</td></tr>
         </table>
 
         <h4>nanobot 的优势</h4>
         <ul>
-            <li class="success">✅ 架构清晰（三层设计）</li>
-            <li class="success">✅ 隐私保护（本地存储）</li>
-            <li class="success">✅ 可控性强（手动整理）</li>
+            <li class="good">✅ 架构清晰（三层设计）</li>
+            <li class="good">✅ 隐私保护（本地存储）</li>
+            <li class="good">✅ 可控性强（手动整理）</li>
         </ul>
 
         <h4>nanobot 的不足</h4>
         <ul>
-            <li class="warning">⚠️ 检索效率（grep vs 向量）</li>
-            <li class="warning">⚠️ 自动筛选（手动 vs 自动）</li>
-            <li class="warning">⚠️ 跨 Agent（无支持）</li>
+            <li class="warn">⚠️ 检索效率（grep vs 向量）</li>
+            <li class="warn">⚠️ 自动筛选（手动 vs 自动）</li>
+            <li class="warn">⚠️ 跨 Agent（无支持）</li>
         </ul>
     </div>
 
-    <!-- 第七部分：关键洞察 -->
     <div class="section">
         <h2>七、关键洞察</h2>
 
@@ -358,7 +357,6 @@ compact → 压缩冗余表达</div>
         </div>
     </div>
 
-    <!-- 参考资料 -->
     <div class="section">
         <h2>八、参考资料</h2>
         <div class="refs">
