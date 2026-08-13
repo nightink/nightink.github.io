@@ -1,116 +1,264 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>nanobot 静态网页发布</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            color: #e8e8e8;
-            min-height: 100vh;
-            padding: 24px 16px;
-        }
-        .container { max-width: 800px; margin: 0 auto; }
-        .header {
-            text-align: center;
-            padding: 32px 16px;
-            margin-bottom: 24px;
-        }
-        .header h1 {
-            font-size: 28px;
-            color: #fff;
-            margin-bottom: 8px;
-        }
-        .header .subtitle {
-            font-size: 14px;
-            color: #a8d8ea;
-        }
-        .page-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .page-item {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 16px 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.2s, background 0.2s;
-        }
-        .page-item:hover {
-            transform: translateY(-2px);
-            background: rgba(255, 255, 255, 0.12);
-        }
-        .page-item a {
-            color: #fff;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: 600;
-            display: block;
-            margin-bottom: 8px;
-        }
-        .page-item a:hover { color: #a8d8ea; }
-        .page-item .meta {
-            font-size: 13px;
-            color: #6b7b8c;
-        }
-        .footer {
-            text-align: center;
-            padding: 24px;
-            font-size: 12px;
-            color: #6b7b8c;
-            margin-top: 32px;
-        }
-        .empty {
-            text-align: center;
-            padding: 48px;
-            color: #6b7b8c;
-        }
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NANOBOT 出版物目录</title>
+<meta name="description" content="nanobot 工作台的出版物目录：知识可视化、数据分析、时间线、技术笔记。GitHub Pages 静态发布。" />
+<style>
+/* ═══ 设计符号：纸面出版社目录 ═══
+   paper 纸 / ink 墨 / hairline 发丝 / stamp 邮戳红（仅印章与新刊标记） */
+:root{
+  --paper:#F2F1EB;
+  --paper-deep:#E9E7DD;
+  --ink:#1B1B18;
+  --muted:#6E6C64;
+  --faint:#A8A69C;
+  --hairline:#D8D6CB;
+  --stamp:#B33A2B;
+  --stamp-soft:#F3E3DF;
+  --fd:"Songti SC","Noto Serif SC","STSong","SimSun",serif;
+  --fb:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --fm:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:var(--fb); font-size:15px; line-height:1.7;
+  padding:0 24px 72px;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+::selection{background:var(--ink); color:var(--paper)}
+.wrap{max-width:840px; margin:0 auto}
+a{color:inherit; text-decoration:none}
+
+/* ── 报头 ── */
+.masthead{
+  display:flex; justify-content:space-between; align-items:flex-start; gap:24px;
+  padding:64px 0 28px; border-bottom:3px double var(--ink);
+}
+.mast-left .wordmark{
+  font-family:var(--fm); font-size:12px; font-weight:600; letter-spacing:.34em;
+  color:var(--muted); text-transform:uppercase; margin-bottom:18px;
+}
+.mast-left h1{
+  font-family:var(--fd); font-size:clamp(2.2rem,6vw,3.4rem); font-weight:900;
+  letter-spacing:.04em; line-height:1.15; text-wrap:balance;
+}
+.mast-left .lede{color:var(--muted); font-size:13.5px; margin-top:14px; max-width:30rem}
+.meta-line{
+  display:flex; flex-wrap:wrap; gap:6px 20px; margin-top:22px;
+  font-family:var(--fm); font-size:11px; letter-spacing:.06em; color:var(--faint);
+}
+.meta-line b{color:var(--muted); font-weight:600}
+
+/* ── 馆藏章 ── */
+.stamp{
+  flex:none; margin-top:6px; transform:rotate(-5deg);
+  border:2px solid var(--stamp); border-radius:6px;
+  color:var(--stamp); text-align:center;
+  padding:12px 16px 10px; font-family:var(--fm);
+  animation:stampin .5s cubic-bezier(.2,.7,.3,1.2) both .35s;
+}
+.stamp .s1{font-size:11px; font-weight:700; letter-spacing:.24em}
+.stamp .s2{font-size:9px; letter-spacing:.14em; margin-top:4px; opacity:.85}
+.stamp .s3{display:block; margin:6px auto 0; width:44px; height:1px; background:var(--stamp); opacity:.5}
+@keyframes stampin{from{opacity:0; transform:rotate(-5deg) scale(1.3)}to{opacity:1; transform:rotate(-5deg) scale(1)}}
+
+/* ── 目录说明 ── */
+.toc-head{
+  display:flex; justify-content:space-between; align-items:baseline;
+  padding:30px 2px 12px; font-family:var(--fm); font-size:11px;
+  letter-spacing:.18em; color:var(--faint); text-transform:uppercase;
+}
+
+/* ── 目录行 ── */
+.toc{list-style:none; border-top:1px solid var(--ink)}
+.toc li{border-bottom:1px solid var(--hairline)}
+.toc a{
+  display:grid; grid-template-columns:64px 1fr auto; gap:18px; align-items:center;
+  padding:20px 10px 20px 2px; position:relative;
+  animation:rowin .5s cubic-bezier(.2,.7,.3,1) both;
+}
+.toc li:nth-child(1) a{animation-delay:.05s}
+.toc li:nth-child(2) a{animation-delay:.10s}
+.toc li:nth-child(3) a{animation-delay:.15s}
+.toc li:nth-child(4) a{animation-delay:.20s}
+.toc li:nth-child(5) a{animation-delay:.25s}
+.toc li:nth-child(6) a{animation-delay:.30s}
+.toc li:nth-child(7) a{animation-delay:.35s}
+@keyframes rowin{from{opacity:0; transform:translateY(10px)}to{opacity:1; transform:none}}
+.toc a:hover, .toc a:focus-visible{background:var(--paper-deep); outline:none}
+.toc a:focus-visible{box-shadow:inset 0 0 0 2px var(--ink)}
+.toc .no{
+  font-family:var(--fm); font-size:12px; color:var(--faint);
+  letter-spacing:.06em; text-align:right;
+}
+.toc h3{
+  font-size:17px; font-weight:600; letter-spacing:.01em; line-height:1.5;
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+}
+.toc .slug{
+  display:block; font-family:var(--fm); font-size:11px; color:var(--muted);
+  letter-spacing:.03em; margin-top:3px;
+}
+.tag{
+  font-size:10.5px; color:var(--muted); letter-spacing:.1em;
+  border:1px solid var(--hairline); border-radius:99px; padding:2px 10px;
+  white-space:nowrap; flex:none;
+}
+.tag.new{color:var(--stamp); border-color:var(--stamp); background:var(--stamp-soft)}
+.toc .when{
+  font-family:var(--fm); font-size:11.5px; color:var(--muted);
+  text-align:right; white-space:nowrap; letter-spacing:.04em;
+}
+.toc .when small{display:block; font-size:9.5px; color:var(--faint); letter-spacing:.14em}
+.toc .arr{
+  position:absolute; right:-6px; top:50%; transform:translateY(-50%);
+  font-family:var(--fm); color:var(--ink); opacity:0; transition:opacity .15s ease, transform .15s ease;
+}
+.toc a:hover .arr, .toc a:focus-visible .arr{opacity:1; transform:translate(4px,-50%)}
+@media (hover:none){.toc .arr{opacity:1}}
+
+/* ── 页脚 ── */
+footer{
+  margin-top:56px; padding-top:20px; border-top:1px solid var(--hairline);
+  display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 24px;
+  font-family:var(--fm); font-size:10.5px; letter-spacing:.1em; color:var(--faint);
+  text-transform:uppercase;
+}
+footer b{color:var(--muted); font-weight:600}
+
+/* ── 窄屏 ── */
+@media (max-width:640px){
+  .masthead{flex-direction:column; padding-top:44px}
+  .stamp{align-self:center; margin-top:-56px; margin-right:0; transform:rotate(-3deg)}}
+  .toc a{grid-template-columns:44px 1fr; grid-template-rows:auto auto}
+  .toc .when{grid-column:2; text-align:left}
+  .toc .when small{display:inline; margin-left:8px}
+}
+@media (prefers-reduced-motion:reduce){
+  .toc a,.stamp{animation:none}
+  .toc .arr{opacity:1}
+  html{scroll-behavior:auto}
+}
+@media print{
+  .toc a{animation:none}
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🚀 nanobot 静态网页</h1>
-            <div class="subtitle">知识可视化 · 数据分析 · 时间线</div>
-        </div>
-        <div class="page-list">
-            <div class="page-item">
-                <a href="dsh-system-flow.html">dsh system flow · DeepSeek Harness 系统流程原理</a>
-                <div class="meta">更新时间：2026-08-14 00:09:11</div>
-            </div>
-            <div class="page-item">
-                <a href="smic-2026q2-earnings.html">smic 2026 q2 earnings · 中芯国际财报深度解读</a>
-                <div class="meta">更新时间：2026-08-13 20:32:00</div>
-            </div>
-            <div class="page-item">
-                <a href="agent-memory.html">agent memory · Agent Memory 技术笔记</a>
-                <div class="meta">更新时间：2026-04-21 19:19:25</div>
-            </div>
-            <div class="page-item">
-                <a href="china-us-moon-mission.html">china us moon mission</a>
-                <div class="meta">更新时间：2026-04-12 13:54:43</div>
-            </div>
-            <div class="page-item">
-                <a href="fuel-analysis.html">fuel analysis</a>
-                <div class="meta">更新时间：2026-04-10 12:05:41</div>
-            </div>
-            <div class="page-item">
-                <a href="crosswise-enterprise-agent.html">crosswise enterprise agent</a>
-                <div class="meta">更新时间：2026-04-07 17:11:39</div>
-            </div>
-            <div class="page-item">
-                <a href="us-iran-conflict-timeline.html">us iran conflict timeline</a>
-                <div class="meta">更新时间：2026-04-07 13:30:47</div>
-            </div>
-        </div>
-        <div class="footer">
-            <div>nanobot workspace · GitHub Pages</div>
-            <div style="margin-top: 8px;">自动生成 · 同步更新</div>
-        </div>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="mast-left">
+      <div class="wordmark">Nanobot Press</div>
+      <h1>出版物目录</h1>
+      <p class="lede">nanobot 工作台的静态发布索引：知识可视化、数据分析、时间线与技术笔记，由 GitHub Pages 托管。</p>
+      <div class="meta-line">
+        <span>共 <b>7</b> 件</span>
+        <span>最近出版 <b>2026-08-14</b></span>
+        <span>编号沿出版时序 · 新刊在前</span>
+      </div>
     </div>
+    <div class="stamp" aria-hidden="true">
+      <div class="s1">NANOBOT PRESS</div>
+      <div class="s2">自动出版 · 目录章</div>
+      <span class="s3"></span>
+    </div>
+  </header>
+
+  <div class="toc-head">
+    <span>№ / 出版物</span>
+    <span>出版日期</span>
+  </div>
+
+  <ol class="toc">
+    <li>
+      <a href="dsh-system-flow.html" aria-label="DeepSeek Harness 系统流程原理，出版于 2026-08-14">
+        <span class="no">№ 007</span>
+        <span>
+          <h3>DeepSeek Harness · 系统流程原理 <span class="tag new">新刊</span></h3>
+          <span class="slug">dsh-system-flow · 系统流程</span>
+        </span>
+        <span class="when">2026-08-14<small>PUBLISHED</small></span>
+        <span class="arr" aria-hidden="true">→</span>
+      </a>
+    </li>
+    <li>
+      <a href="smic-2026q2-earnings.html" aria-label="中芯国际 2026 Q2 财报深度解读，出版于 2026-08-13">
+        <span class="no">№ 006</span>
+        <span>
+          <h3>中芯国际 2026 Q2 财报深度解读 <span class="tag new">新刊</span></h3>
+          <span class="slug">smic-2026q2-earnings · 财报解读</span>
+        </span>
+        <span class="when">2026-08-13<small>PUBLISHED</small></span>
+        <span class="arr" aria-hidden="true">→</span>
+      </a>
+    </li>
+    <li>
+      <a href="agent-memory.html" aria-label="Agent Memory 技术笔记，出版于 2026-04-21">
+        <span class="no">№ 005</span>
+        <span>
+          <h3>Agent Memory 技术笔记</h3>
+          <span class="slug">agent-memory · 技术笔记</span>
+        </span>
+        <span class="when">2026-04-21<small>PUBLISHED</small></span>
+        <span class="arr" aria-hidden="true">→</span>
+      </a>
+    </li>
+    <li>
+      <a href="china-us-moon-mission.html" aria-label="中美登月项目进展与未来展望，出版于 2026-04-12">
+        <span class="no">№ 004</span>
+        <span>
+          <h3>中美登月项目进展与未来展望</h3>
+          <span class="slug">china-us-moon-mission · 专题</span>
+        </span>
+        <span class="when">2026-04-12<small>PUBLISHED</small></span>
+        <span class="arr" aria-hidden="true">→</span>
+      </a>
+    </li>
+    <li>
+      <a href="fuel-analysis.html" aria-label="加油数据分析 2024-2026，出版于 2026-04-10">
+        <span class="no">№ 003</span>
+        <span>
+          <h3>加油数据分析（2024–2026）</h3>
+          <span class="slug">fuel-analysis · 数据分析</span>
+        </span>
+        <span class="when">2026-04-10<small>PUBLISHED</small></span>
+        <span class="arr" aria-hidden="true">→</span>
+      </a>
+    </li>
+    <li>
+      <a href="crosswise-enterprise-agent.html" aria-label="CrossWise 企业版 OpenClaw 就该我们做，出版于 2026-04-07">
+        <span class="no">№ 002</span>
+        <span>
+          <h3>CrossWise：企业版 OpenClaw 就该我们做</h3>
+          <span class="slug">crosswise-enterprise-agent · 产品观察</span>
+        </span>
+        <span class="when">2026-04-07<small>PUBLISHED</small></span>
+        <span class="arr" aria-hidden="true">→</span>
+      </a>
+    </li>
+    <li>
+      <a href="us-iran-conflict-timeline.html" aria-label="美以伊冲突时间线，出版于 2026-04-07">
+        <span class="no">№ 001</span>
+        <span>
+          <h3>美以伊冲突时间线（2026）</h3>
+          <span class="slug">us-iran-conflict-timeline · 时间线</span>
+        </span>
+        <span class="when">2026-04-07<small>PUBLISHED</small></span>
+        <span class="arr" aria-hidden="true">→</span>
+      </a>
+    </li>
+  </ol>
+
+  <footer>
+    <span><b>Nanobot</b> Workspace · GitHub Pages</span>
+    <span>自动出版 · 同步更新 · 2026</span>
+  </footer>
+
+</div>
 </body>
 </html>
