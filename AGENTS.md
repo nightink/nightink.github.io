@@ -77,6 +77,7 @@
 |---|---|---|
 | index.html | 目录体系 | 出版物目录正本 |
 | smic-2026q2-earnings.html | MONO 报告 | 6 张模板图（F1/L3/F2/F7/F6/F5），附注含选型记录 |
+| pi-herdr-agents-research.html | MONO 报告 | 开源项目调研，4 张模板图（F12/F1/F3/F5），附注含选型记录与核验方法 |
 | dsh-system-flow.html | 独立 | DeepSeek Harness 流程（其自有风格） |
 | agent-memory.html | 独立 | GitHub 暗色主题技术笔记 |
 | 其余历史页面 | 独立 | 保持原样即可，不强行统一 |
