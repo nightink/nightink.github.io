@@ -77,6 +77,7 @@
 |---|---|---|
 | index.html | 目录体系 | 出版物目录正本 |
 | huzhou-family-trip-2d1n.html | MONO 报告 | 国庆亲子游攻略（时刻表/路书为主），4 张模板图（F10/F5/F8/F1）+ 不等比例路线示意条，附注含选型记录、来源分级与未核实清单 |
+| yiwu-family-trip-3d2n.html | MONO 报告 | 国庆亲子游攻略（自驾/动车双方案门到门对比 + 三日时刻表），4 张模板图（F10/F12/F8/F9）+ 不等比例路线示意条，附注含选型记录、来源分级与未核实清单 |
 | smic-2026q2-earnings.html | MONO 报告 | 6 张模板图（F1/L3/F2/F7/F6/F5），附注含选型记录 |
 | pi-herdr-agents-research.html | MONO 报告 | 开源项目调研，4 张模板图（F12/F1/F3/F5），附注含选型记录与核验方法 |
 | dsh-system-flow.html | 独立 | DeepSeek Harness 流程（其自有风格） |
