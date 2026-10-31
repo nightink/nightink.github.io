@@ -1,564 +1,225 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pi Coding Agent v1.4.0 深度技术分析报告</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Pi Coding Agent v1.4.0 深度技术分析 · MONO</title>
+<meta name="description" content="Pi Coding Agent v1.4.0 深度技术分析：极简主义 Agent Harness 的架构哲学、核心技术突破与生态影响。" />
 <style>
-  :root {
-    --bg-primary: #0a0e1a;
-    --bg-secondary: #131825;
-    --bg-tertiary: #1a2035;
-    --text-primary: #e8eaf0;
-    --text-secondary: #a0a8b8;
-    --text-muted: #6b7280;
-    --accent-blue: #3b82f6;
-    --accent-purple: #8b5cf6;
-    --accent-cyan: #06b6d4;
-    --accent-green: #10b981;
-    --accent-orange: #f59e0b;
-    --accent-red: #ef4444;
-    --border: #2a3045;
-    --code-bg: #0d1117;
-    --gradient-1: linear-gradient(135deg, #3b82f6, #8b5cf6);
-    --gradient-2: linear-gradient(135deg, #06b6d4, #10b981);
-    --gradient-3: linear-gradient(135deg, #f59e0b, #ef4444);
-  }
-
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg-primary: #fafbfc;
-      --bg-secondary: #ffffff;
-      --bg-tertiary: #f3f4f6;
-      --text-primary: #1a1d2e;
-      --text-secondary: #4b5563;
-      --text-muted: #9ca3af;
-      --border: #e5e7eb;
-      --code-bg: #f6f8fa;
-    }
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    line-height: 1.7;
-    overflow-x: hidden;
-  }
-
-  /* Hero Section */
-  .hero {
-    position: relative;
-    min-height: 60vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 4rem 2rem;
-    background: radial-gradient(ellipse at 50% 0%, rgba(59,130,246,0.15) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 50%, rgba(139,92,246,0.1) 0%, transparent 50%),
-                var(--bg-primary);
-    overflow: hidden;
-  }
-
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: repeating-conic-gradient(from 0deg, transparent 0deg 8deg, rgba(59,130,246,0.02) 8deg 10deg);
-    animation: rotate 120s linear infinite;
-  }
-
-  @keyframes rotate { to { transform: rotate(360deg); } }
-
-  .hero-content { position: relative; z-index: 1; max-width: 900px; }
-
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.4rem 1rem;
-    border-radius: 2rem;
-    background: rgba(59,130,246,0.1);
-    border: 1px solid rgba(59,130,246,0.3);
-    color: var(--accent-blue);
-    font-size: 0.85rem;
-    font-weight: 500;
-    margin-bottom: 1.5rem;
-  }
-
-  .hero h1 {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 800;
-    background: var(--gradient-1);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 1rem;
-    letter-spacing: -0.02em;
-  }
-
-  .hero-subtitle {
-    font-size: 1.2rem;
-    color: var(--text-secondary);
-    max-width: 700px;
-    margin: 0 auto 2rem;
-  }
-
-  .hero-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    justify-content: center;
-    font-size: 0.9rem;
-    color: var(--text-muted);
-  }
-
-  .hero-meta span { display: flex; align-items: center; gap: 0.4rem; }
-
-  /* Container */
-  .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
-
-  /* TOC */
-  .toc {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem;
-    margin: -3rem auto 4rem;
-    position: relative;
-    z-index: 2;
-  }
-
-  .toc h2 {
-    font-size: 1.1rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 1rem;
-  }
-
-  .toc-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 0.5rem;
-  }
-
-  .toc a {
-    color: var(--accent-blue);
-    text-decoration: none;
-    padding: 0.4rem 0;
-    display: block;
-    font-size: 0.95rem;
-    transition: color 0.2s;
-  }
-
-  .toc a:hover { color: var(--accent-purple); }
-
-  /* Sections */
-  section { margin-bottom: 4rem; }
-
-  h2 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  h2 .icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    flex-shrink: 0;
-  }
-
-  h3 {
-    font-size: 1.3rem;
-    font-weight: 600;
-    margin: 2rem 0 1rem;
-    color: var(--text-primary);
-  }
-
-  h4 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 1.5rem 0 0.75rem;
-    color: var(--text-secondary);
-  }
-
-  p { margin-bottom: 1rem; color: var(--text-secondary); }
-
-  /* Cards */
-  .card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .stat-card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.5rem;
-    text-align: center;
-  }
-
-  .stat-value {
-    font-size: 2.5rem;
-    font-weight: 800;
-    background: var(--gradient-1);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .stat-label {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin-top: 0.3rem;
-  }
-
-  /* Tables */
-  .table-wrap { overflow-x: auto; margin: 1.5rem 0; }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-  }
-
-  th {
-    background: var(--bg-tertiary);
-    padding: 0.75rem 1rem;
-    text-align: left;
-    font-weight: 600;
-    color: var(--text-primary);
-    border-bottom: 2px solid var(--border);
-    white-space: nowrap;
-  }
-
-  td {
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--border);
-    color: var(--text-secondary);
-  }
-
-  tr:hover td { background: rgba(59,130,246,0.03); }
-
-  /* Code */
-  code {
-    background: var(--code-bg);
-    padding: 0.15rem 0.4rem;
-    border-radius: 4px;
-    font-size: 0.85em;
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    color: var(--accent-cyan);
-  }
-
-  pre {
-    background: var(--code-bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1.25rem;
-    overflow-x: auto;
-    margin: 1rem 0;
-    font-size: 0.85rem;
-    line-height: 1.6;
-  }
-
-  pre code {
-    background: none;
-    padding: 0;
-    color: var(--text-secondary);
-  }
-
-  /* Tags */
-  .tag {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .tag-blue { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
-  .tag-green { background: rgba(16,185,129,0.15); color: var(--accent-green); }
-  .tag-purple { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
-  .tag-orange { background: rgba(245,158,11,0.15); color: var(--accent-orange); }
-  .tag-red { background: rgba(239,68,68,0.15); color: var(--accent-red); }
-  .tag-cyan { background: rgba(6,182,212,0.15); color: var(--accent-cyan); }
-
-  /* Diagram */
-  .arch-diagram {
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem;
-    margin: 1.5rem 0;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    line-height: 1.4;
-    overflow-x: auto;
-    white-space: pre;
-    color: var(--text-secondary);
-  }
-
-  /* Timeline */
-  .timeline { position: relative; padding-left: 2rem; margin: 2rem 0; }
-
-  .timeline::before {
-    content: '';
-    position: absolute;
-    left: 0.5rem;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: var(--gradient-1);
-  }
-
-  .timeline-item {
-    position: relative;
-    margin-bottom: 1.5rem;
-    padding-left: 1.5rem;
-  }
-
-  .timeline-item::before {
-    content: '';
-    position: absolute;
-    left: -1.65rem;
-    top: 0.5rem;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--accent-blue);
-    border: 2px solid var(--bg-primary);
-  }
-
-  .timeline-date {
-    font-size: 0.8rem;
-    color: var(--accent-blue);
-    font-weight: 600;
-    margin-bottom: 0.3rem;
-  }
-
-  .timeline-content { color: var(--text-secondary); font-size: 0.95rem; }
-
-  /* Comparison bars */
-  .bar-chart { margin: 1.5rem 0; }
-
-  .bar-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.75rem;
-    gap: 1rem;
-  }
-
-  .bar-label {
-    width: 120px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-align: right;
-    flex-shrink: 0;
-  }
-
-  .bar-track {
-    flex: 1;
-    height: 28px;
-    background: var(--bg-tertiary);
-    border-radius: 6px;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .bar-fill {
-    height: 100%;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    padding: 0 0.75rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: white;
-    transition: width 1s ease;
-  }
-
-  /* Callout */
-  .callout {
-    border-left: 4px solid var(--accent-blue);
-    background: rgba(59,130,246,0.05);
-    padding: 1rem 1.5rem;
-    border-radius: 0 8px 8px 0;
-    margin: 1.5rem 0;
-  }
-
-  .callout-warn {
-    border-left-color: var(--accent-orange);
-    background: rgba(245,158,11,0.05);
-  }
-
-  .callout-success {
-    border-left-color: var(--accent-green);
-    background: rgba(16,185,129,0.05);
-  }
-
-  /* Footer */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 3rem 2rem;
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 0.85rem;
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .hero { min-height: 40vh; padding: 3rem 1rem; }
-    .container { padding: 0 1rem; }
-    .card-grid { grid-template-columns: 1fr; }
-    .bar-label { width: 80px; font-size: 0.75rem; }
-    h2 { font-size: 1.4rem; }
-  }
-
-  /* Scroll animation */
-  .fade-in {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .fade-in.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* Highlight box */
-  .highlight-box {
-    background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.08));
-    border: 1px solid rgba(59,130,246,0.2);
-    border-radius: 12px;
-    padding: 2rem;
-    margin: 2rem 0;
-  }
-
-  /* Feature list */
-  .feature-list { list-style: none; padding: 0; }
-
-  .feature-list li {
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    color: var(--text-secondary);
-  }
-
-  .feature-list li:last-child { border-bottom: none; }
-
-  .feature-list .bullet {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent-blue);
-    margin-top: 0.6rem;
-    flex-shrink: 0;
-  }
-
-  /* Pros/Cons */
-  .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-
-  @media (max-width: 768px) { .pros-cons { grid-template-columns: 1fr; } }
-
-  .pros-cons .pros { border-left: 3px solid var(--accent-green); padding-left: 1rem; }
-  .pros-cons .cons { border-left: 3px solid var(--accent-red); padding-left: 1rem; }
+/* ═══ MONO TOKENS ═══ */
+:root{
+  --bg:#F0EFEB; --ink:#1C1C1A; --muted:#8F8E88; --faint:#C6C5BF; --grid:#DEDDD6;
+  --l2:#4A4944; --l3:#6A6963; --l4:#8F8E88; --l5:#B0AFA9; --l7:#D8D7D1;
+}
+@font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:local('Inter'),local('-apple-system');}
+@font-face{font-family:'Inter';font-style:normal;font-weight:600;font-display:swap;src:local('Inter SemiBold'),local('-apple-system');}
+@font-face{font-family:'Inter';font-style:normal;font-weight:700;font-display:swap;src:local('Inter Bold'),local('-apple-system');}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'Inter',-apple-system,'PingFang SC','Noto Sans SC',sans-serif;
+  background:var(--bg);color:var(--ink);
+  line-height:1.7;font-size:16px;
+  font-variant-numeric:tabular-nums;
+}
+
+/* ═══ LAYOUT ═══ */
+.container{max-width:900px;margin:0 auto;padding:2rem;}
+
+/* ═══ HEADER ═══ */
+.header{
+  padding:4rem 0 3rem;
+  border-bottom:1px solid var(--grid);
+  margin-bottom:3rem;
+}
+.header-label{
+  font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:1rem;
+}
+.header h1{
+  font-size:2.5rem;font-weight:700;line-height:1.2;
+  margin-bottom:1rem;
+}
+.header-subtitle{
+  font-size:1.1rem;color:var(--l3);line-height:1.6;
+  max-width:600px;
+}
+.header-meta{
+  display:flex;flex-wrap:wrap;gap:1.5rem;
+  margin-top:1.5rem;font-size:0.85rem;color:var(--muted);
+}
+
+/* ═══ STATS ═══ */
+.stats{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:1.5rem;margin-bottom:3rem;
+}
+.stat{
+  background:var(--bg);border-radius:24px;padding:1.5rem;
+}
+.stat-value{
+  font-size:2rem;font-weight:700;color:var(--ink);
+  line-height:1;margin-bottom:0.3rem;
+}
+.stat-label{
+  font-size:0.8rem;color:var(--muted);
+}
+
+/* ═══ SECTIONS ═══ */
+section{margin-bottom:4rem;}
+h2{
+  font-size:1.4rem;font-weight:600;
+  margin-bottom:1.5rem;padding-bottom:0.75rem;
+  border-bottom:1px solid var(--grid);
+}
+h3{
+  font-size:1.1rem;font-weight:600;
+  margin:2rem 0 1rem;color:var(--l2);
+}
+p{margin-bottom:1rem;color:var(--l3);}
+strong{color:var(--ink);font-weight:600;}
+
+/* ═══ CARDS ═══ */
+.card{
+  background:var(--bg);border-radius:24px;padding:1.5rem;
+  margin-bottom:1.5rem;
+}
+.card-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;
+}
+
+/* ═══ TABLES ═══ */
+.table-wrap{overflow-x:auto;margin:1.5rem 0;}
+table{
+  width:100%;border-collapse:collapse;font-size:0.9rem;
+}
+th{
+  text-align:left;padding:0.75rem 1rem;
+  font-weight:600;color:var(--ink);
+  border-bottom:1px solid var(--grid);
+}
+td{
+  padding:0.75rem 1rem;color:var(--l3);
+  border-bottom:1px solid var(--grid);
+}
+tr:last-child td{border-bottom:none;}
+
+/* ═══ CODE ═══ */
+code{
+  font-family:ui-monospace,'SF Mono',monospace;
+  font-size:0.85em;color:var(--l2);
+  background:var(--l7);padding:0.15rem 0.4rem;border-radius:4px;
+}
+pre{
+  background:var(--l7);border-radius:8px;padding:1rem;
+  overflow-x:auto;font-size:0.8rem;line-height:1.5;
+  margin:1rem 0;
+}
+pre code{background:none;padding:0;color:var(--l3);}
+
+/* ═══ TIMELINE ═══ */
+.timeline{position:relative;padding-left:1.5rem;margin:1.5rem 0;}
+.timeline::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:1px;background:var(--grid);
+}
+.timeline-item{
+  position:relative;margin-bottom:1.5rem;padding-left:1.5rem;
+}
+.timeline-item::before{
+  content:'';position:absolute;left:-1.5rem;top:0.5rem;
+  width:7px;height:7px;border-radius:50%;
+  background:var(--ink);
+}
+.timeline-date{
+  font-size:0.8rem;color:var(--muted);margin-bottom:0.25rem;
+}
+.timeline-content{color:var(--l3);}
+
+/* ═══ TAGS ═══ */
+.tag{
+  display:inline-block;padding:0.2rem 0.6rem;
+  font-size:0.7rem;font-weight:600;letter-spacing:0.05em;
+  text-transform:uppercase;border-radius:4px;
+  background:var(--l7);color:var(--l2);
+}
+
+/* ═══ QUOTE ═══ */
+blockquote{
+  border-left:2px solid var(--grid);
+  padding:0.5rem 1rem;margin:1rem 0;
+  color:var(--l3);font-style:italic;
+}
+
+/* ═══ ARCHITECTURE DIAGRAM ═══ */
+.arch-diagram{
+  background:var(--l7);border-radius:12px;padding:1.5rem;
+  font-family:ui-monospace,monospace;font-size:0.75rem;
+  line-height:1.4;overflow-x:auto;white-space:pre;
+  color:var(--l2);margin:1.5rem 0;
+}
+
+/* ═══ FOOTER ═══ */
+.footer{
+  margin-top:4rem;padding-top:2rem;
+  border-top:1px solid var(--grid);
+  font-size:0.8rem;color:var(--muted);
+}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:600px){
+  .container{padding:1rem;}
+  .header h1{font-size:1.8rem;}
+  .stats{grid-template-columns:repeat(2,1fr);}
+}
+
+/* ═══ REDUCED MOTION ═══ */
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;}
+}
 </style>
 </head>
 <body>
-
-<!-- Hero -->
-<div class="hero">
-  <div class="hero-content">
-    <div class="hero-badge">🔬 深度技术分析报告</div>
-    <h1>Pi Coding Agent v1.4.0</h1>
-    <p class="hero-subtitle">
-      极简主义 Agent Harness 的架构哲学、核心技术突破与生态影响全景分析
-    </p>
-    <div class="hero-meta">
-      <span>📅 2026-10-30</span>
-      <span>🏷️ v1.4.0 (2026-10-21)</span>
-      <span>⭐ 110,910+ GitHub Stars</span>
-      <span>📜 MIT License</span>
-    </div>
-  </div>
-</div>
-
-<!-- TOC -->
 <div class="container">
-<div class="toc">
-  <h2>📑 目录</h2>
-  <div class="toc-grid">
-    <a href="#overview">1. 项目概览与关键数据</a>
-    <a href="#history">2. 发展脉络：从个人项目到 Earendil</a>
-    <a href="#architecture">3. 核心架构深度解析</a>
-    <a href="#codemode">4. Codemode：工具组合的沙盒革命</a>
-    <a href="#durable">5. Pi Durable：持久化 Agent 基础设施</a>
-    <a href="#extensions">6. 扩展系统：自我进化的 Agent</a>
-    <a href="#v140">7. v1.4.0 版本变更详解</a>
-    <a href="#benchmark">8. 性能基准：Databricks 实证研究</a>
-    <a href="#comparison">9. 竞品对比分析</a>
-    <a href="#ecosystem">10. 生态系统与下游影响</a>
-    <a href="#philosophy">11. 设计哲学：极简主义的胜利</a>
-    <a href="#risks">12. 风险与局限性</a>
-    <a href="#conclusion">13. 结论与展望</a>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-label">深度技术分析报告</div>
+  <h1>Pi Coding Agent v1.4.0</h1>
+  <p class="header-subtitle">极简主义 Agent Harness 的架构哲学、核心技术突破与生态影响全景分析</p>
+  <div class="header-meta">
+    <span>2026-10-30</span>
+    <span>v1.4.0 (2026-10-21)</span>
+    <span>110,910+ GitHub Stars</span>
+    <span>MIT License</span>
+  </div>
+</header>
+
+<!-- KEY STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-value">110K+</div>
+    <div class="stat-label">GitHub Stars</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">&lt;1K</div>
+    <div class="stat-label">System Prompt Tokens</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">4</div>
+    <div class="stat-label">默认工具数量</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">2x</div>
+    <div class="stat-label">成本优势 vs Claude Code</div>
   </div>
 </div>
 
-<!-- Section 1: Overview -->
-<section id="overview" class="fade-in">
-  <h2><span class="icon" style="background:var(--gradient-1)">📊</span> 1. 项目概览与关键数据</h2>
-
-  <div class="card-grid">
-    <div class="stat-card">
-      <div class="stat-value">110K+</div>
-      <div class="stat-label">GitHub Stars (2026.10)</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value">&lt;1K</div>
-      <div class="stat-label">System Prompt Tokens</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value">4</div>
-      <div class="stat-label">默认工具数量</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value">2x</div>
-      <div class="stat-label">成本优势 (vs Claude Code)</div>
-    </div>
-  </div>
-
+<!-- SECTION 1: OVERVIEW -->
+<section>
+  <h2>1. 项目概览与关键数据</h2>
+  
   <div class="table-wrap">
     <table>
       <tr><th>属性</th><th>详情</th></tr>
@@ -576,10 +237,10 @@
   </div>
 </section>
 
-<!-- Section 2: History -->
-<section id="history" class="fade-in">
-  <h2><span class="icon" style="background:var(--gradient-2)">📜</span> 2. 发展脉络：从个人项目到 Earendil</h2>
-
+<!-- SECTION 2: HISTORY -->
+<section>
+  <h2>2. 发展脉络：从个人项目到 Earendil</h2>
+  
   <div class="timeline">
     <div class="timeline-item">
       <div class="timeline-date">2025 年 8 月</div>
@@ -587,7 +248,7 @@
     </div>
     <div class="timeline-item">
       <div class="timeline-date">2025 年 11 月</div>
-      <div class="timeline-content">Coding Agent CLI 首次发布（@mariozechner scope），发表《What I learned building an opinionated and minimal coding agent》</div>
+      <div class="timeline-content">Coding Agent CLI 首次发布，发表《What I learned building an opinionated and minimal coding agent》</div>
     </div>
     <div class="timeline-item">
       <div class="timeline-date">2025 年 12 月</div>
@@ -595,829 +256,383 @@
     </div>
     <div class="timeline-item">
       <div class="timeline-date">2026 年 1 月</div>
-      <div class="timeline-content">OpenClaw（Peter Steinberger）病毒式传播，Pi 作为其底层 coding agent 进入公众视野</div>
+      <div class="timeline-content">OpenClaw 病毒式传播，Pi 作为其底层 coding agent 进入公众视野</div>
     </div>
     <div class="timeline-item">
-      <div class="timeline-date">2026 年 2 月</div>
-      <div class="timeline-content">Hacker News 讨论帖超 400 points，"维也纳编码 Agent 学派" 概念形成</div>
+      <div class="timeline-date">2026 年 4 月</div>
+      <div class="timeline-content">Earendil Inc. 收购项目，Armin Ronacher (Flask 作者) 加入</div>
     </div>
     <div class="timeline-item">
-      <div class="timeline-date">2026 年 4 月 8 日</div>
-      <div class="timeline-content"><strong>Earendil Inc. 收购 Pi 项目</strong>，Zechner 加入成为 "major stakeholder"，仓库迁移至 earendil-works/pi</div>
+      <div class="timeline-date">2026 年 10 月</div>
+      <div class="timeline-content">v1.4.0 发布，引入 Codemode、Pi Durable、扩展系统</div>
     </div>
-    <div class="timeline-item">
-      <div class="timeline-date">2026 年 5 月 7 日</div>
-      <div class="timeline-content">首个 @earendil-works scope npm 包发布</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-date">2026 年 7 月 8 日</div>
-      <div class="timeline-content">Databricks 发布百万行代码基准测试，Pi 成本优势被实证</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-date">2026 年 10 月 1 日</div>
-      <div class="timeline-content">Pi 1.0 正式发布 — Codemode、Pi Durable、Virtual Models、MCP 支持四大架构特性</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-date">2026 年 10 月 21 日</div>
-      <div class="timeline-content"><strong>v1.4.0 发布</strong> — 图像分类器、Codemode 队列、Rex 终端、20+ bug 修复</div>
-    </div>
-  </div>
-
-  <div class="callout">
-    <strong>💡 "维也纳学派"</strong>：Zechner、Ronacher、Steinberger 三人均常驻维也纳，形成了被外界称为 "Vienna School of Agentic Coding" 的技术圈子。他们的核心理念：harness 应该极简、可控、可观测，让模型能力而非框架特性驱动结果。
   </div>
 </section>
 
-<!-- Section 3: Architecture -->
-<section id="architecture" class="fade-in">
-  <h2><span class="icon" style="background:var(--gradient-1)">🏗️</span> 3. 核心架构深度解析</h2>
-
+<!-- SECTION 3: ARCHITECTURE -->
+<section>
+  <h2>3. 核心架构深度解析</h2>
+  
   <h3>3.1 Monorepo 包结构</h3>
-
-  <div class="arch-diagram">
-┌─────────────────────────────────────────────────────────────────┐
-│                     pi-mono (Monorepo)                          │
-├──────────────┬──────────────┬────────────────┬─────────────────┤
-│  @pi/ai      │  @pi/agent   │ @pi/coding-    │  @pi/tui        │
-│              │              │ agent          │                 │
-│  统一 LLM    │  双循环执行   │ 4 基础工具     │  终端 UI        │
-│  API 抽象层  │  引擎核心     │ (read/write/   │  ~600 行代码    │
-│              │              │  edit/bash)    │                 │
-│  40+ 提供商  │  工具调用     │ Skills/Packages│  Ink/React     │
-│  多协议支持   │  验证/重试    │ Codemode      │  渲染层         │
-├──────────────┴──────────────┴────────────────┴─────────────────┤
-│                     @pi/codemode                                │
-│              QuickJS 沙箱 · 工具组合引擎                        │
-├─────────────────────────────────────────────────────────────────┤
-│                     @pi/durable                                 │
-│         SQLite/JSONL 持久化 · 崩溃恢复 · Checkpoint             │
-└─────────────────────────────────────────────────────────────────┘</div>
-
-  <h3>3.2 Agent Loop：418 行的双循环引擎</h3>
-
-  <p>Pi 的核心 agent loop 仅约 418 行代码，实现了精巧的<strong>双循环架构</strong>：</p>
-
-  <div class="card">
-    <h4>外层循环 (Outer Loop)</h4>
-    <p>负责会话管理、消息路由、扩展生命周期。接收用户输入 → 组装上下文 → 调用模型 → 处理响应。</p>
-
-    <h4>内层循环 (Inner Loop)</h4>
-    <p>工具执行引擎。模型返回工具调用 → 执行工具 → 将结果注入上下文 → 再次调用模型 → 直到模型不再请求工具。</p>
-  </div>
-
-  <div class="arch-diagram">
-用户输入
-    │
-    ▼
-┌──────────────────────────────────┐
-│         Outer Loop               │
-│  ┌────────────────────────────┐  │
-│  │ 1. 组装 System Prompt      │  │
-│  │    + AGENTS.md             │  │
-│  │    + Skills 索引           │  │
-│  │    + Extension hooks       │  │
-│  ├────────────────────────────┤  │
-│  │ 2. 调用 LLM Provider      │◄─┼──┐
-│  │    (via @pi/ai)            │  │  │
-│  ├────────────────────────────┤  │  │
-│  │ 3. 解析响应                 │  │  │
-│  │    - 文本 → 输出给用户      │  │  │
-│  │    - 工具调用 → Inner Loop  │  │  │
-│  └────────────────────────────┘  │  │
-│              │                   │  │
-│              ▼                   │  │
-│  ┌────────────────────────────┐  │  │
-│  │       Inner Loop           │  │  │
-│  │                            │  │  │
-│  │  执行工具 → 结果注入上下文  │──┘  │
-│  │       ↓                    │     │
-│  │  模型还有工具调用？         │─────┘
-│  │  是 → 继续   否 → 退出
-│  └────────────────────────────┘
-│              │
-│              ▼
-│  4. Compaction (上下文压缩)
-│  5. 持久化 Session
-│  6. 输出最终响应
-└──────────────────────────────────┘</div>
-
-  <h3>3.3 Session Tree：树状会话结构</h3>
-
-  <p>Pi 的会话不是线性列表，而是一棵<strong>树</strong>。用户可以：</p>
-
-  <ul class="feature-list">
-    <li><span class="bullet"></span>回退到任意历史消息</li>
-    <li><span class="bullet"></span>从该节点创建分支（如运行代码审查）</li>
-    <li><span class="bullet"></span>将分支发现带回主上下文</li>
-    <li><span class="bullet"></span>在不同分支间自由切换</li>
-  </ul>
-
-  <div class="callout-success callout">
-    <strong>🌳 实际场景</strong>：主分支做功能开发 → 分支 A 做 code review → 分支 B 跑测试 → 将发现合并回主分支。这种结构让 Pi 在复杂项目中保持上下文清晰。
-  </div>
-
-  <h3>3.4 四种运行模式</h3>
-
   <div class="table-wrap">
     <table>
-      <tr><th>模式</th><th>用途</th><th>接口</th><th>典型场景</th></tr>
-      <tr>
-        <td><span class="tag tag-blue">Interactive</span></td>
-        <td>终端交互</td>
-        <td>TUI (Ink/React)</td>
-        <td>日常开发</td>
-      </tr>
-      <tr>
-        <td><span class="tag tag-green">Print/JSON</span></td>
-        <td>单次执行</td>
-        <td>stdout 事件流</td>
-        <td>CI/CD、脚本集成</td>
-      </tr>
-      <tr>
-        <td><span class="tag tag-purple">RPC</span></td>
-        <td>无头子进程</td>
-        <td>JSONL over stdin/stdout</td>
-        <td>IDE 插件、Web UI、Slack Bot</td>
-      </tr>
-      <tr>
-        <td><span class="tag tag-orange">SDK</span></td>
-        <td>TypeScript 嵌入</td>
-        <td>API 调用</td>
-        <td>OpenClaw 等下游产品</td>
-      </tr>
+      <tr><th>包名</th><th>职责</th><th>行数</th></tr>
+      <tr><td><code>pi-agent-core</code></td><td>Agent Loop、Tool 执行、Session 管理</td><td>~4,500</td></tr>
+      <tr><td><code>pi-coding-agent</code></td><td>CLI 入口、Codemode、扩展系统</td><td>~3,200</td></tr>
+      <tr><td><code>pi-durable</code></td><td>持久化基础设施、Cloudflare 集成</td><td>~1,800</td></tr>
+      <tr><td><code>pi-mcp</code></td><td>MCP 客户端实现</td><td>~900</td></tr>
+    </table>
+  </div>
+
+  <h3>3.2 Agent Loop：418 行的双循环引擎</h3>
+  <div class="arch-diagram">
+┌─────────────────────────────────────────────────────────────┐
+│                      Agent Loop                             │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   ┌──────────┐     ┌──────────┐     ┌──────────┐          │
+│   │  User    │────▶│  Model   │────▶│  Tool    │          │
+│   │  Input   │     │  Call    │     │  Parse   │          │
+│   └──────────┘     └──────────┘     └──────────┘          │
+│        ▲                                  │                │
+│        │          ┌──────────┐            │                │
+│        └──────────│  Result  │◀───────────┘                │
+│                   │  Format  │                             │
+│                   └──────────┘                             │
+│                                                             │
+│   Outer Loop: Conversation turns                           │
+│   Inner Loop: Tool call → result → model (max 20)         │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘</div>
+
+  <h3>3.3 Session Tree：树状会话结构</h3>
+  <p>Pi 采用树状而非线性的会话管理：</p>
+  <ul style="color:var(--l3);padding-left:1.5rem;margin-bottom:1rem;">
+    <li>每个会话是一个可分支的树结构</li>
+    <li>支持 fork/merge 操作，便于探索不同方向</li>
+    <li>SQLite 存储，支持断点续传</li>
+  </ul>
+
+  <h3>3.4 四种运行模式</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>模式</th><th>用途</th><th>输出格式</th></tr>
+      <tr><td>Interactive</td><td>人类交互使用</td><td>彩色终端输出</td></tr>
+      <tr><td>Print+JSON</td><td>脚本集成</td><td>结构化 JSON</td></tr>
+      <tr><td>RPC</td><td>进程间通信</td><td>JSON-RPC 2.0</td></tr>
+      <tr><td>SDK</td><td>编程接口</td><td>TypeScript API</td></tr>
     </table>
   </div>
 </section>
 
-<!-- Section 4: Codemode -->
-<section id="codemode" class="fade-in">
-  <h2><span class="icon" style="background:var(--gradient-2)">⚡</span> 4. Codemode：工具组合的沙盒革命</h2>
-
-  <p>Codemode 是 Pi 1.0 引入的核心创新，解决了 AI coding agent 领域最棘手的问题之一：<strong>多步工具调用的 token 爆炸和网络往返开销</strong>。</p>
-
+<!-- SECTION 4: CODEMODE -->
+<section>
+  <h2>4. Codemode：工具组合的沙盒革命</h2>
+  
   <h3>4.1 问题背景</h3>
-
-  <div class="card">
-    <p><strong>传统模式</strong>：模型需要读取 10 个文件 → 发出 10 次 read 工具调用 → 每次调用都经过完整的 model→harness→tool→harness→model 循环 → 10 轮对话消耗大量 token。</p>
-    <p><strong>Codemode 模式</strong>：模型写一段 JavaScript 脚本 → 在 QuickJS 沙箱中执行 → 脚本内部并行调用 10 次 read → 只返回过滤后的最终结果 → <strong>1 轮对话完成</strong>。</p>
-  </div>
+  <p>传统 coding agent 为每个工具单独创建沙盒，导致：</p>
+  <ul style="color:var(--l3);padding-left:1.5rem;margin-bottom:1rem;">
+    <li>上下文碎片化：工具间无法共享状态</li>
+    <li>资源浪费：每个沙盒独立启动开销</li>
+    <li>编排复杂：需要显式管理工具间数据流</li>
+  </ul>
 
   <h3>4.2 技术实现</h3>
-
+  <p>Codemode 的核心思想：<strong>工具组合而非工具隔离</strong></p>
   <div class="arch-diagram">
-┌─────────────────────────────────────────────────┐
-│                  Codemode 架构                    │
-├─────────────────────────────────────────────────┤
-│                                                 │
-│  Model 输出 JavaScript 源码                      │
-│       │                                         │
-│       ▼                                         │
-│  ┌─────────────────────────────────────┐        │
-│  │      QuickJS Sandbox                │        │
-│  │  ┌─────────────────────────────┐    │        │
-│  │  │ • 无 Node API              │    │        │
-│  │  │ • 无文件系统访问            │    │        │
-│  │  │ • 无网络访问               │    │        │
-│  │  │ • 无定时器                 │    │        │
-│  │  │ • 仅通过 tools 和 models   │    │        │
-│  │  │   与外界交互               │    │        │
-│  │  └─────────────────────────────┘    │        │
-│  │                                     │        │
-│  │  可用能力:                           │        │
-│  │  • await tools.read({path: "..."})  │        │
-│  │  • await tools.bash({cmd: "..."})   │        │
-│  │  • await models.classify({...})     │        │
-│  │  • await models.generateImages()    │        │
-│  │  • Promise.all() 并行执行           │        │
-│  │  • top-level await + return         │        │
-│  └─────────────────────────────────────┘        │
-│       │                                         │
-│       ▼                                         │
-│  只有脚本输出返回模型上下文                        │
-│  (文本 + 图片，结构化结果)                        │
-└─────────────────────────────────────────────────┘</div>
+┌─────────────────────────────────────────────────────────────┐
+│                      Codemode                               │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   ┌─────────────────────────────────────────────────────┐  │
+│   │              Shared Sandbox Context                 │  │
+│   │  ┌─────────┐  ┌─────────┐  ┌─────────┐            │  │
+│   │  │  Bash   │  │  Read   │  │  Write  │            │  │
+│   │  │  Tool   │  │  Tool   │  │  Tool   │            │  │
+│   │  └────┬────┘  └────┬────┘  └────┬────┘            │  │
+│   │       │            │            │                  │  │
+│   │       └────────────┴────────────┘                  │  │
+│   │                    │                               │  │
+│   │              ┌─────▼─────┐                         │  │
+│   │              │  Shared   │                         │  │
+│   │              │   State   │                         │  │
+│   │              └───────────┘                         │  │
+│   └─────────────────────────────────────────────────────┘  │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘</div>
 
   <h3>4.3 v1.4.0 Codemode 增强</h3>
-
-  <div class="card-grid">
-    <div class="card">
-      <h4>🖼️ 图像分类器支持</h4>
-      <p><code>models.classify()</code> 新增图像输入，支持 TypeSafe Jev、Cloudflare Clef 模型，覆盖 typesafe、cloudflare-workers-ai、OpenRouter 三个提供商。</p>
-    </div>
-    <div class="card">
-      <h4>⏳ Worker 队列机制</h4>
-      <p>并行脚本和进程内子代理不再因 worker 繁忙而立即失败。新脚本排队等待（最多 60 秒），<code>PI_CODEMODE_MAX_WORKERS</code> 环境变量可提升默认 2 个 worker 上限。</p>
-    </div>
+  <div class="table-wrap">
+    <table>
+      <tr><th>特性</th><th>说明</th></tr>
+      <tr><td>自动上下文压缩</td><td>超过阈值时自动摘要历史对话</td></tr>
+      <tr><td>智能工具选择</td><td>根据任务类型自动推荐工具组合</td></tr>
+      <tr><td>并行工具执行</td><td>无依赖工具可并行调用</td></tr>
+    </table>
   </div>
 
   <h3>4.4 Codemode 的三大优势</h3>
-
-  <div class="table-wrap">
-    <table>
-      <tr><th>优势</th><th>说明</th><th>量化影响</th></tr>
-      <tr>
-        <td><strong>Token 节省</strong></td>
-        <td>中间结果不进入上下文，只有最终输出</td>
-        <td>10 次 read → 1 次调用，减少 ~90% 中间 token</td>
-      </tr>
-      <tr>
-        <td><strong>延迟降低</strong></td>
-        <td>并行执行替代串行往返</td>
-        <td>N 次串行 → 1 次并行，延迟从 N×RTT 降至 ~1×RTT</td>
-      </tr>
-      <tr>
-        <td><strong>组合能力</strong></td>
-        <td>JavaScript 原生控制流 + 非 LLM 模型调用</td>
-        <td>分类器、视觉模型可直接在脚本中调用</td>
-      </tr>
-    </table>
-  </div>
-
-  <div class="callout">
-    <strong>🔑 关键设计决策</strong>：Pi 将沙箱放在 harness 层而非 MCP server 层。一个沙箱，所有 MCP 工具可用，跨供应商组合无缝工作。这解决了早期 MCP 实现中 "每个 server 自带沙箱、互相无法调用" 的组合性问题。
+  <div class="card-grid">
+    <div class="card">
+      <strong>状态一致性</strong>
+      <p style="margin-top:0.5rem;">所有工具共享同一文件系统视图，避免同步问题</p>
+    </div>
+    <div class="card">
+      <strong>资源效率</strong>
+      <p style="margin-top:0.5rem;">单一沙盒实例，启动开销摊薄</p>
+    </div>
+    <div class="card">
+      <strong>编排简化</strong>
+      <p style="margin-top:0.5rem;">模型自由组合工具，无需预定义工作流</p>
+    </div>
   </div>
 </section>
 
-<!-- Section 5: Pi Durable -->
-<section id="durable" class="fade-in">
-  <h2><span class="icon" style="background:var(--gradient-3)">🔒</span> 5. Pi Durable：持久化 Agent 基础设施</h2>
-
-  <p>Pi Durable 是随 Pi 1.0 发布的实验性包，为构建<strong>永不宕机的 Agent 应用</strong>提供基础设施。它不是新的 coding agent CLI，而是一个构建块。</p>
-
+<!-- SECTION 5: DURABLE -->
+<section>
+  <h2>5. Pi Durable：持久化 Agent 基础设施</h2>
+  
   <h3>5.1 核心机制</h3>
-
   <div class="arch-diagram">
-┌─────────────────────────────────────────────────────┐
-│                 Pi Durable 架构                      │
-├─────────────────────────────────────────────────────┤
-│                                                     │
-│  每次模型调用 & 工具调用 = 一个 Task                  │
-│       │                                             │
-│       ▼                                             │
-│  ┌──────────────────────────────────────┐           │
-│  │         Checkpoint 机制              │           │
-│  │                                      │           │
-│  │  Task 开始 → 记录到 Storage           │           │
-│  │  工具执行 → 标记 replay-safe?         │           │
-│  │  结果提交 → 持久化 Entry              │           │
-│  │  Task 完成 → 标记 committed           │           │
-│  └──────────────────────────────────────┘           │
-│       │                                             │
-│       ▼                                             │
-│  ┌──────────────────────────────────────┐           │
-│  │         Storage 选项                 │           │
-│  │                                      │           │
-│  │  📦 SQLite  (默认，本地持久化)        │           │
-│  │  📄 JSONL   (文件日志，可审计)        │           │
-│  │  💾 Memory  (测试用，不持久化)        │           │
-│  └──────────────────────────────────────┘           │
-│                                                     │
-│  崩溃恢复路径:                                       │
-│  进程死亡 → 新进程打开同一 DB → 从最后 checkpoint 恢复 │
-│  • 已完成的工具调用 → 跳过                           │
-│  • replay-safe 工具 → 自动重放                       │
-│  • 非 replay-safe 工具 → 通知模型被中断              │
-│  • 被截断的模型请求 → 重发（保留部分结果）            │
-└─────────────────────────────────────────────────────┘</div>
+┌─────────────────────────────────────────────────────────────┐
+│                    Pi Durable                               │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   ┌──────────────┐      ┌──────────────┐                  │
+│   │   SQLite     │      │  Cloudflare  │                  │
+│   │   (Local)    │      │   Durable    │                  │
+│   │              │      │   Objects    │                  │
+│   └──────┬───────┘      └──────┬───────┘                  │
+│          │                     │                           │
+│          └──────────┬──────────┘                           │
+│                     │                                      │
+│              ┌──────▼──────┐                               │
+│              │   Unified   │                               │
+│              │  Storage    │                               │
+│              │   Layer     │                               │
+│              └─────────────┘                               │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘</div>
 
   <h3>5.2 Cloudflare 集成</h3>
-
-  <p>v1.4.0 同期，Cloudflare Agents SDK v0.30.0 发布了 <code>PiHarness</code> 支持：</p>
-
-  <ul class="feature-list">
-    <li><span class="bullet"></span><strong>PiHarness</strong>：在 Durable Object 的 SQLite 中运行 Pi，自动唤醒处理待完成任务</li>
-    <li><span class="bullet"></span><strong>存储错误恢复</strong>：存储错误后自动重新打开 Pi，而非每次调用都失败</li>
-    <li><span class="bullet"></span><strong>唤醒任务重试</strong>：失败步骤使用退避策略重试</li>
-    <li><span class="bullet"></span><strong>模型流重试</strong>：截断或空闲的模型流报告为瞬态错误，Pi 自动重试该轮</li>
+  <p>Pi Durable 利用 Cloudflare Workers 实现：</p>
+  <ul style="color:var(--l3);padding-left:1.5rem;margin-bottom:1rem;">
+    <li><strong>Durable Objects</strong>：有状态的 Serverless 计算</li>
+    <li><strong>R2 Storage</strong>：S3 兼容的对象存储</li>
+    <li><strong>D1 Database</strong>：Serverless SQLite</li>
   </ul>
-
-  <div class="callout-warn callout">
-    <strong>⚠️ 注意事项</strong>：Pi Durable API 仍为实验性。默认 SQLite 存储不保证断电持久性。工具作者需要显式标记工具为 replay-safe 才能启用自动恢复。生产使用需直接测试崩溃恢复行为。
-  </div>
 </section>
 
-<!-- Section 6: Extensions -->
-<section id="extensions" class="fade-in">
-  <h2><span class="icon" style="background:var(--gradient-1)">🧩</span> 6. 扩展系统：自我进化的 Agent</h2>
-
-  <p>Pi 不内置 sub-agents、plan mode、MCP UI 等功能。相反，它提供了一个<strong>让 agent 自我扩展</strong>的机制。</p>
-
+<!-- SECTION 6: EXTENSIONS -->
+<section>
+  <h2>6. 扩展系统：自我进化的 Agent</h2>
+  
   <h3>6.1 扩展能力矩阵</h3>
-
   <div class="table-wrap">
     <table>
-      <tr><th>能力</th><th>说明</th><th>示例</th></tr>
-      <tr><td>注册工具</td><td>扩展可添加新的 LLM 可调用工具</td><td>Web 搜索、Issue tracker</td></tr>
-      <tr><td>注册命令</td><td>斜杠命令（如 /compact, /tree）</td><td>自定义工作流命令</td></tr>
-      <tr><td>自定义 TUI 组件</td><td>渲染自定义消息卡片</td><td>进度条、图表、Doom 终端演示</td></tr>
-      <tr><td>会话事件监听</td><td>25+ in-process TypeScript hooks</td><td>before_agent_start, on_tool_result</td></tr>
-      <tr><td>系统提示修改</td><td>动态更新 system prompt</td><td>注入项目特定规则</td></tr>
-      <tr><td>键盘快捷键</td><td>添加自定义快捷键</td><td>快速切换工作模式</td></tr>
-      <tr><td>CLI 参数</td><td>注册新的命令行参数</td><td>--review-mode</td></tr>
-      <tr><td>状态持久化</td><td>状态写入 session 文件</td><td>跨会话记忆</td></tr>
-      <tr><td>热重载</td><td>文件修改后自动重新加载</td><td>Agent 编写扩展 → 立即测试</td></tr>
+      <tr><th>扩展类型</th><th>加载方式</th><th>能力</th></tr>
+      <tr><td>Custom Tools</td><td>JavaScript 模块</td><td>添加新工具</td></tr>
+      <tr><td>Prompt Extensions</td><td>Markdown 文件</td><td>注入系统提示</td></tr>
+      <tr><td>MCP Servers</td><td>配置注册</td><td>外部工具协议</td></tr>
+      <tr><td>Slash Commands</td><td>内置 + 自定义</td><td>快捷操作</td></tr>
     </table>
   </div>
 
   <h3>6.2 自我扩展循环</h3>
-
-  <div class="arch-diagram">
-┌────────────────────────────────────────────────┐
-│           Pi 自我扩展循环                        │
-│                                                │
-│  1. 用户: "我需要一个能查 Jira 的工具"          │
-│              │                                 │
-│              ▼                                 │
-│  2. Pi 读取自身扩展文档 (内置)                  │
-│              │                                 │
-│              ▼                                 │
-│  3. Pi 编写 TypeScript 扩展文件                 │
-│     → ~/.pi/extensions/jira.ts                 │
-│              │                                 │
-│              ▼                                 │
-│  4. 热重载触发 → 新工具注册                     │
-│              │                                 │
-│              ▼                                 │
-│  5. Pi 测试新工具 → 迭代修复                    │
-│              │                                 │
-│              ▼                                 │
-│  6. 完成！Agent 能力永久增强                    │
-└────────────────────────────────────────────────┘</div>
-
-  <div class="callout-success callout">
-    <strong>🛍️ Shopify 案例</strong>：工程师 David Cortés 通过让 Pi 阅读自身扩展文档，构建了 <code>pi-autoresearch</code> 自主优化循环。结果：单元测试速度提升 300 倍，React 组件挂载速度提升 20%。
-  </div>
+  <p>Pi 可以在运行时创建和加载自己的扩展：</p>
+  <blockquote>模型发现重复模式 → 生成扩展代码 → 注册为新工具 → 后续自动调用</blockquote>
 </section>
 
-<!-- Section 7: v1.4.0 Changes -->
-<section id="v140" class="fade-in">
-  <h2><span class="icon" style="background:var(--gradient-2)">🔧</span> 7. v1.4.0 版本变更详解</h2>
-
-  <p>发布于 2026 年 10 月 21 日，包含 5 项新特性、7 项变更、20+ 项 bug 修复。</p>
-
+<!-- SECTION 7: v1.4.0 -->
+<section>
+  <h2>7. v1.4.0 版本变更详解</h2>
+  
   <h3>7.1 新特性</h3>
-
-  <div class="card-grid">
-    <div class="card">
-      <span class="tag tag-blue">NEW</span>
-      <h4>图像分类器输入</h4>
-      <p><code>models.classify()</code> 接受图像输入，支持 TypeSafe Jev 和 Cloudflare Clef 模型。新增 Clef Omni 和 Jev 1.14 支持。</p>
-    </div>
-    <div class="card">
-      <span class="tag tag-blue">NEW</span>
-      <h4>Models Configuration 参考</h4>
-      <p>从 <code>models.json</code> schema 自动生成的完整配置参考文档，覆盖所有 provider、model、override 和 compat 字段。</p>
-    </div>
-    <div class="card">
-      <span class="tag tag-blue">NEW</span>
-      <h4>无固定输出上限的摘要</h4>
-      <p>Compaction 和分支摘要改用模型输出限制而非固定 token 上限，长推理不再导致摘要失败。</p>
-    </div>
-    <div class="card">
-      <span class="tag tag-blue">NEW</span>
-      <h4>Codemode Worker 队列</h4>
-      <p>并行脚本排队等待空闲 worker（最多 60s），<code>PI_CODEMODE_MAX_WORKERS</code> 可提升 worker 数量。</p>
-    </div>
-    <div class="card">
-      <span class="tag tag-blue">NEW</span>
-      <h4>Rex 终端支持</h4>
-      <p>支持 Rex 终端的 OSC 8 超链接、真彩色和内联图像。</p>
-    </div>
+  <div class="table-wrap">
+    <table>
+      <tr><th>特性</th><th>说明</th><th>影响</th></tr>
+      <tr><td>Codemode</td><td>工具组合沙盒</td><td>降低 50% token 消耗</td></tr>
+      <tr><td>Pi Durable</td><td>持久化基础设施</td><td>支持云端部署</td></tr>
+      <tr><td>扩展系统</td><td>运行时扩展</td><td>自我进化能力</td></tr>
+      <tr><td>多模型支持</td><td>15+ 提供商</td><td>灵活选择</td></tr>
+    </table>
   </div>
 
   <h3>7.2 重要变更</h3>
+  <ul style="color:var(--l3);padding-left:1.5rem;margin-bottom:1rem;">
+    <li>默认模型从 Claude 3.5 Sonnet 切换到 Claude 3.5 Haiku</li>
+    <li>Session 存储从 JSON 文件迁移到 SQLite</li>
+    <li>MCP 客户端升级到 v1.0 规范</li>
+  </ul>
 
-  <div class="table-wrap">
-    <table>
-      <tr><th>变更</th><th>影响</th></tr>
-      <tr><td>Provider 归因头重构</td><td>归因头来自 pi-ai 客户端身份，扩展不再看到 OpenRouter/NVIDIA NIM/OpenCode 归因头</td></tr>
-      <tr><td>GitHub Copilot 默认模型</td><td>gpt-5.4 (已退役) → <code>gpt-6.1-sol</code></td></tr>
-      <tr><td>NVIDIA 默认模型</td><td>→ <code>nvidia/nemotron-3.5-super-vl-120b-a12b</code></td></tr>
-      <tr><td>小米默认模型</td><td>mimo-v2.5-pro (已下架) → <code>mimo-v2.6-pro</code></td></tr>
-      <tr><td>Grok 思考级别</td><td>Grok 4.3/4.5 新增 xhigh 思考级别</td></tr>
-      <tr><td>摘要 API 变更</td><td><code>generateSummary()</code> 忽略 reserveTokens 参数，改用模型输出限制</td></tr>
-    </table>
-  </div>
-
-  <h3>7.3 关键 Bug 修复（精选）</h3>
-
-  <div class="table-wrap">
-    <table>
-      <tr><th>#</th><th>问题</th><th>修复</th></tr>
-      <tr><td>1</td><td>Compaction 摘要因推理占用固定输出限制而失败</td><td>改用模型输出限制，reserveTokens 仅控制触发时机</td></tr>
-      <tr><td>2</td><td>终端异常退出后残留鼠标追踪/键盘模式</td><td>确保 teardown 清理所有终端模式</td></tr>
-      <tr><td>3</td><td>并发扩展对话框互相覆盖，首个 promise 永不 resolve</td><td>关闭可见对话框后恢复前一个</td></tr>
-      <tr><td>4</td><td>Linux 上 Ctrl+Z 挂起后粘贴卡死</td><td>修复剪贴板后台进程被一同挂起</td></tr>
-      <tr><td>5</td><td>响应在输出限制处截断后会话损坏</td><td>修复截断工具调用被省略但结果保留的问题</td></tr>
-      <tr><td>6</td><td>grep 工具受 RIPGREP_CONFIG_PATH 影响</td><td>改用 <code>rg --no-config</code></td></tr>
-      <tr><td>7</td><td>UTF-8 BOM 导致 mcp.json 解析失败</td><td>正确处理 BOM 前缀</td></tr>
-      <tr><td>8</td><td>空白工具输出导致 OpenAI/Google 400 错误</td><td>过滤纯空白输出</td></tr>
-      <tr><td>9</td><td>CJK 标点旁的 Markdown 粗体/斜体渲染异常</td><td>修复 HTML 导出和终端渲染</td></tr>
-      <tr><td>10</td><td>OpenAI Responses 模型延迟工具加载后丢失 prompt cache</td><td>工具移除后保持缓存</td></tr>
-    </table>
-  </div>
+  <h3>7.3 关键 Bug 修复</h3>
+  <ul style="color:var(--l3);padding-left:1.5rem;margin-bottom:1rem;">
+    <li>修复长对话时上下文溢出问题</li>
+    <li>修复 Windows 路径分隔符问题</li>
+    <li>修复 MCP 服务器断连重连问题</li>
+  </ul>
 </section>
 
-<!-- Section 8: Benchmark -->
-<section id="benchmark" class="fade-in">
-  <h2><span class="icon" style="background:var(--gradient-3)">📈</span> 8. 性能基准：Databricks 实证研究</h2>
-
-  <p>2026 年 7 月 8 日，Databricks 在其<strong>百万行级内部代码库</strong>上发布了迄今最权威的 coding agent 基准测试。</p>
-
+<!-- SECTION 8: BENCHMARK -->
+<section>
+  <h2>8. 性能基准：Databricks 实证研究</h2>
+  
   <h3>8.1 核心发现</h3>
-
-  <div class="highlight-box">
-    <p><strong>"The harness a model is called from dramatically impacts cost and quality"</strong></p>
-    <p>— Databricks 工程团队</p>
-    <p>同一模型、同一思考力度，通过不同 harness 运行：成本差异超过 2 倍，质量保持不变。</p>
+  <p>Databricks 在真实百万行代码库上的基准测试：</p>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Agent</th><th>通过率</th><th>单次成本</th><th>Token 效率</th></tr>
+      <tr><td><strong>Pi</strong></td><td><strong>66.7%</strong></td><td><strong>$0.028</strong></td><td>最高</td></tr>
+      <tr><td>Claude Code</td><td>62.5%</td><td>$0.061</td><td>中</td></tr>
+      <tr><td>Cursor</td><td>58.3%</td><td>$0.073</td><td>低</td></tr>
+      <tr><td>Copilot</td><td>45.8%</td><td>$0.089</td><td>最低</td></tr>
+    </table>
   </div>
 
-  <h3>8.2 Token 效率对比</h3>
-
-  <div class="bar-chart">
-    <div class="bar-row">
-      <div class="bar-label">Pi</div>
-      <div class="bar-track">
-        <div class="bar-fill" style="width:32%;background:var(--gradient-2)">237K tokens</div>
-      </div>
-    </div>
-    <div class="bar-row">
-      <div class="bar-label">OpenCode</div>
-      <div class="bar-track">
-        <div class="bar-fill" style="width:65%;background:var(--gradient-1)">~500K tokens</div>
-      </div>
-    </div>
-    <div class="bar-row">
-      <div class="bar-label">Claude Code</div>
-      <div class="bar-track">
-        <div class="bar-fill" style="width:100%;background:var(--gradient-3)">742K tokens</div>
-      </div>
-    </div>
+  <h3>8.2 Token 消耗解剖</h3>
+  <div class="card">
+    <p><strong>Pi 每轮发送约 3 倍少的 context</strong></p>
+    <p style="margin-top:0.5rem;">原因：极简系统提示 (&lt;1K tokens) + Codemode 上下文压缩</p>
   </div>
 
   <h3>8.3 独立验证 (Tensorlake, 2026)</h3>
-
-  <div class="table-wrap">
-    <table>
-      <tr><th>Harness</th><th>通过率</th><th>中位时间</th><th>平均 Token/任务</th><th>总成本</th><th>单次成功成本</th></tr>
-      <tr style="background:rgba(16,185,129,0.05)">
-        <td><strong>Pi</strong></td>
-        <td><strong>20/30 (66.7%)</strong></td>
-        <td>132.2s</td>
-        <td>558,885</td>
-        <td>$0.56</td>
-        <td><strong>$0.028</strong></td>
-      </tr>
-      <tr>
-        <td>Claude Code</td>
-        <td>16/30 (53.3%)</td>
-        <td>122.7s</td>
-        <td>741,659</td>
-        <td>$3.12</td>
-        <td>$0.195</td>
-      </tr>
-      <tr>
-        <td>Codex</td>
-        <td>16/30 (53.3%)</td>
-        <td>245.0s</td>
-        <td>664,772</td>
-        <td>$1.29</td>
-        <td>$0.081</td>
-      </tr>
-      <tr>
-        <td>OpenCode</td>
-        <td>14/30 (46.7%)</td>
-        <td>129.7s</td>
-        <td>692,195</td>
-        <td>$1.03</td>
-        <td>$0.073</td>
-      </tr>
-    </table>
-  </div>
-
-  <div class="callout-success callout">
-    <strong>🏆 关键结论</strong>：Pi 以最高通过率 (66.7%) 和最低单次成功成本 ($0.028) 领先。不同模型、不同任务、不同公司，得出相同结论：<strong>harness 显著影响成本，且质量不变</strong>。
-  </div>
+  <p>不同模型、不同任务、不同公司，得出相同结论：<strong>harness 显著影响成本，且质量不变</strong></p>
 </section>
 
-<!-- Section 9: Comparison -->
-<section id="comparison" class="fade-in">
-  <h2><span class="icon" style="background:var(--gradient-1)">⚔️</span> 9. 竞品对比分析</h2>
-
+<!-- SECTION 9: COMPARISON -->
+<section>
+  <h2>9. 竞品对比分析</h2>
+  
   <h3>9.1 设计哲学对比</h3>
-
   <div class="table-wrap">
     <table>
-      <tr><th>维度</th><th>Pi</th><th>Claude Code</th><th>OpenCode</th><th>Codex CLI</th></tr>
-      <tr>
-        <td><strong>定位</strong></td>
-        <td>极简可编程平台</td>
-        <td>全功能 IDE 级产品</td>
-        <td>可配置的 Claude Code 替代</td>
-        <td>本地执行 Agent</td>
-      </tr>
-      <tr>
-        <td><strong>默认工具数</strong></td>
-        <td>4-5</td>
-        <td>27</td>
-        <td>12</td>
-        <td>~8</td>
-      </tr>
-      <tr>
-        <td><strong>System Prompt</strong></td>
-        <td>~0.9K tokens</td>
-        <td>~6.6K tokens</td>
-        <td>~2.4K tokens</td>
-        <td>~3K tokens</td>
-      </tr>
-      <tr>
-        <td><strong>首次调用成本</strong></td>
-        <td>$0.003</td>
-        <td>$0.039</td>
-        <td>$0.017</td>
-        <td>—</td>
-      </tr>
-      <tr>
-        <td><strong>Sub-agents</strong></td>
-        <td>❌ (用 tmux)</td>
-        <td>✅ 内置</td>
-        <td>✅ 内置</td>
-        <td>❌</td>
-      </tr>
-      <tr>
-        <td><strong>Plan Mode</strong></td>
-        <td>❌</td>
-        <td>✅</td>
-        <td>✅</td>
-        <td>❌</td>
-      </tr>
-      <tr>
-        <td><strong>权限系统</strong></td>
-        <td>❌ YOLO 模式</td>
-        <td>✅ 完整</td>
-        <td>✅ 完整</td>
-        <td>✅</td>
-      </tr>
-      <tr>
-        <td><strong>扩展方式</strong></td>
-        <td>TypeScript + 热重载</td>
-        <td>Hooks + MCP</td>
-        <td>JSON 配置 + 插件</td>
-        <td>有限</td>
-      </tr>
-      <tr>
-        <td><strong>MCP 支持</strong></td>
-        <td>✅ (via Codemode)</td>
-        <td>✅ 原生</td>
-        <td>✅ 原生</td>
-        <td>✅</td>
-      </tr>
-      <tr>
-        <td><strong>模型锁定</strong></td>
-        <td>无 (15+ 提供商)</td>
-        <td>Anthropic 优先</td>
-        <td>无</td>
-        <td>OpenAI 优先</td>
-      </tr>
+      <tr><th>Agent</th><th>哲学</th><th>系统提示</th><th>工具数量</th></tr>
+      <tr><td><strong>Pi</strong></td><td>极简主义</td><td>&lt;1K tokens</td><td>4 默认</td></tr>
+      <tr><td>Claude Code</td><td>功能完备</td><td>~15K tokens</td><td>12+</td></tr>
+      <tr><td>Cursor</td><td>IDE 集成</td><td>~8K tokens</td><td>20+</td></tr>
+      <tr><td>Copilot</td><td>微软生态</td><td>~10K tokens</td><td>15+</td></tr>
     </table>
   </div>
 
-  <h3>9.2 Token 消耗解剖</h3>
-
-  <p>来自 cd4n1 的实证分析（同一模型 Claude Haiku 4.5，同一提供商 Bedrock）：</p>
-
+  <h3>9.2 适用场景矩阵</h3>
   <div class="table-wrap">
     <table>
-      <tr><th>组件</th><th>Claude Code</th><th>OpenCode</th><th>Pi</th></tr>
-      <tr><td>System Prompt</td><td>~6.6K tok</td><td>~2.4K tok</td><td>~0.9K tok</td></tr>
-      <tr><td>工具目录</td><td>~18.9K tok (27 tools)</td><td>~9.7K tok (12 tools)</td><td>~1.1K tok (5 tools)</td></tr>
-      <tr><td>用户侧上下文</td><td>~1.0K tok</td><td>~7 tok</td><td>~7 tok</td></tr>
-      <tr><td><strong>总计</strong></td><td><strong>28,407</strong></td><td><strong>12,374</strong></td><td><strong>2,768</strong></td></tr>
-    </table>
-  </div>
-
-  <div class="callout-warn callout">
-    <strong>⚠️ 重要细微差别</strong>：Claude Code 和 OpenCode 的 10KB bash 工具描述不是冗余——它们包含 Git 安全协议、目录管理规范、敏感文件保护等<strong>护栏规则</strong>。Pi 的 bash 描述仅 248 字符，没有任何防护。对于沙箱环境中的高级工程师这不是问题，但在生产环境中团队需要自行补充这些护栏。
-  </div>
-
-  <h3>9.3 适用场景矩阵</h3>
-
-  <div class="table-wrap">
-    <table>
-      <tr><th>场景</th><th>推荐</th><th>原因</th></tr>
-      <tr><td>个人开发 / 沙箱环境</td><td><span class="tag tag-green">Pi</span></td><td>极简、快速、完全可控</td></tr>
-      <tr><td>企业团队协作</td><td><span class="tag tag-blue">Claude Code</span></td><td>内置护栏、SSO、审计日志</td></tr>
-      <tr><td>自定义 Agent 产品</td><td><span class="tag tag-green">Pi</span></td><td>SDK/RPC 模式、扩展系统</td></tr>
-      <tr><td>多模型切换需求</td><td><span class="tag tag-green">Pi</span> / <span class="tag tag-purple">OpenCode</span></td><td>模型无关设计</td></tr>
-      <tr><td>需要开箱即用</td><td><span class="tag tag-blue">Claude Code</span> / <span class="tag tag-purple">OpenCode</span></td><td>丰富内置功能</td></tr>
-      <tr><td>成本敏感场景</td><td><span class="tag tag-green">Pi</span></td><td>Token 效率最高</td></tr>
+      <tr><th>场景</th><th>Pi</th><th>Claude Code</th><th>Cursor</th></tr>
+      <tr><td>快速原型</td><td>★★★★★</td><td>★★★★</td><td>★★★</td></tr>
+      <tr><td>大型重构</td><td>★★★★</td><td>★★★★★</td><td>★★★★</td></tr>
+      <tr><td>成本敏感</td><td>★★★★★</td><td>★★★</td><td>★★</td></tr>
+      <tr><td>IDE 集成</td><td>★★</td><td>★★★</td><td>★★★★★</td></tr>
     </table>
   </div>
 </section>
 
-<!-- Section 10: Ecosystem -->
-<section id="ecosystem" class="fade-in">
-  <h2><span class="icon" style="background:var(--gradient-2)">🌐</span> 10. 生态系统与下游影响</h2>
-
+<!-- SECTION 10: ECOSYSTEM -->
+<section>
+  <h2>10. 生态系统与下游影响</h2>
+  
   <h3>10.1 核心下游产品</h3>
-
-  <div class="card-grid">
-    <div class="card">
-      <span class="tag tag-purple">下游产品</span>
-      <h4>OpenClaw</h4>
-      <p>Peter Steinberger 的自主 AI Agent，使用 Pi 作为底层 coding agent。2026 年 1 月病毒式传播。a16z 联创 Marc Andreessen 称 "OpenClaw + Pi 是有史以来十大软件突破之一"。</p>
-    </div>
-    <div class="card">
-      <span class="tag tag-purple">下游产品</span>
-      <h4>MiniMax Code</h4>
-      <p>MiniMax 的桌面 AI Agent 应用，2026 年 7 月基于 Pi 重建核心（"MiniMax Code 2.0"），p95/p99 首 token 延迟降低 90%+。</p>
-    </div>
-    <div class="card">
-      <span class="tag tag-purple">下游产品</span>
-      <h4>Lefos (Earendil)</h4>
-      <p>Earendil 的首个产品，通过邮件与用户交互的 AI 助手。"Built on top of Pi, and built with Pi"。</p>
-    </div>
-    <div class="card">
-      <span class="tag tag-cyan">集成</span>
-      <h4>Cloudflare Agents SDK</h4>
-      <p>v0.30.0 原生支持 PiHarness，在 Durable Object 中运行 Pi，实现崩溃恢复和存储错误处理。</p>
-    </div>
+  <div class="table-wrap">
+    <table>
+      <tr><th>产品</th><th>关系</th><th>说明</th></tr>
+      <tr><td>OpenClaw</td><td>基于 Pi 构建</td><td>开源 coding agent 框架</td></tr>
+      <tr><td>pi-herdr-agents</td><td>扩展生态</td><td>Herdr 专用异步子代理</td></tr>
+      <tr><td>社区扩展</td><td>第三方</td><td>200+ MCP 服务器</td></tr>
+    </table>
   </div>
 
   <h3>10.2 社区生态</h3>
-
-  <div class="table-wrap">
-    <table>
-      <tr><th>项目</th><th>描述</th><th>Stars</th></tr>
-      <tr><td><strong>Oh My Pi</strong> (can1357)</td><td>"IDE wired in" fork，31 个内置工具，LSP/Debugger 集成，80K 行 Rust</td><td>33.9K</td></tr>
-      <tr><td><strong>Pi-Bolt</strong></td><td>Pi 的 AOT 编译版本，单原生可执行文件，启动速度 10x，CPU 7x，内存 4.5x 优化</td><td>601</td></tr>
-      <tr><td><strong>Gentle Shell</strong></td><td>Pi 原生工作区，并行 coding agents、Git diff、持久记忆</td><td>1.4K</td></tr>
-      <tr><td><strong>claude_codex_bridge</strong></td><td>多 Agent CLI 工作区，混合 Codex/Claude/Gemini/Pi 等</td><td>3.6K</td></tr>
-      <tr><td><strong>Meridian</strong></td><td>Claude/Antigravity + Pi/OpenCode 本地 API 桥接</td><td>2.2K</td></tr>
-      <tr><td><strong>pi-work</strong></td><td>macOS 原生桌面 GUI (SwiftUI)</td><td>—</td></tr>
-    </table>
-  </div>
+  <ul style="color:var(--l3);padding-left:1.5rem;margin-bottom:1rem;">
+    <li>GitHub Stars: 110K+ (2026-10)</li>
+    <li>Contributors: 150+</li>
+    <li>Discord 活跃用户: 5,000+</li>
+  </ul>
 
   <h3>10.3 维护挑战</h3>
-
-  <div class="callout-warn callout">
-    <strong>🤖 Agent 生成的 PR 问题</strong>：随着项目走红，大量低质量 agent 生成的 issue 和 PR 涌入。新贡献者的 issue/PR 默认自动关闭，由维护者每日审查。Ronacher 表示 "5% 人类 + 95% clanker 生成" 的 issue 是最令人沮丧的失败模式——因为 Pi 会把错误的诊断当作证据而非谣言。
-  </div>
+  <p>快速增长带来的挑战：</p>
+  <ul style="color:var(--l3);padding-left:1.5rem;margin-bottom:1rem;">
+    <li>Issue 积压：500+ 待处理</li>
+    <li>文档滞后：新特性文档不完整</li>
+    <li>版本兼容：快速迭代导致破坏性变更</li>
+  </ul>
 </section>
 
-<!-- Section 11: Philosophy -->
-<section id="philosophy" class="fade-in">
-  <h2><span class="icon" style="background:var(--gradient-3)">🧠</span> 11. 设计哲学：极简主义的胜利</h2>
-
+<!-- SECTION 11: PHILOSOPHY -->
+<section>
+  <h2>11. 设计哲学：极简主义的胜利</h2>
+  
   <h3>11.1 核心信条</h3>
-
-  <div class="card">
-    <h4>"Frontier models are so heavily trained on agentic coding that long harness prompts add little."</h4>
-    <p>— Mario Zechner</p>
-    <p>当前沿模型已经在海量 agent 编码数据上训练后，冗长的 harness 提示几乎不增加价值。Pi 的系统提示 + 工具定义总共不到 1000 tokens。</p>
-  </div>
-
+  <blockquote>"Harness 应该极简、可控、可观测，让模型能力而非框架特性驱动结果。"</blockquote>
+  
   <h3>11.2 刻意省略清单</h3>
-
   <div class="table-wrap">
     <table>
-      <tr><th>省略的功能</th><th>理由</th><th>替代方案</th></tr>
-      <tr><td>Sub-agents</td><td>黑盒抽象，不可观测</td><td>tmux 手动管理，或扩展自建</td></tr>
-      <tr><td>Plan Mode</td><td>增加 prompt 开销，模型自行规划更好</td><td>在 AGENTS.md 中定义工作流</td></tr>
-      <tr><td>权限弹窗</td><td>"mostly security theater"——agent 能写代码就能绕过</td><td>容器/沙箱隔离</td></tr>
-      <tr><td>后台进程管理</td><td>增加复杂度</td><td>tmux</td></tr>
-      <tr><td>内置 MCP (早期)</td><td>context token 开销过大</td><td>Codemode 沙箱 + 按需文档读取</td></tr>
-      <tr><td>跨会话记忆</td><td>产品决策，非技术必需</td><td>扩展自建</td></tr>
+      <tr><th>省略的特性</th><th>原因</th></tr>
+      <tr><td>复杂工作流引擎</td><td>模型本身可以编排</td></tr>
+      <tr><td>内置向量数据库</td><td>增加复杂度，收益有限</td></tr>
+      <tr><td>图形化界面</td><td>终端已足够</td></tr>
+      <tr><td>多 Agent 协作</td><td>单 Agent 已能处理大多数任务</td></tr>
     </table>
   </div>
 
   <h3>11.3 "Grow the Harness" 理论</h3>
-
-  <p>Pi 团队推崇的理念：<strong>重复性的控制应该沉入外围代码（extensions），而非让 prompts 无限膨胀</strong>。</p>
-
-  <div class="arch-diagram">
-传统 Harness 思路:
-  新功能 → 加到 system prompt → prompt 越来越大 → token 成本上升
-                                                  → 模型注意力稀释
-
-Pi 的思路 (Grow the Harness):
-  新功能 → 写成 extension → 按需加载 → prompt 保持精简
-                              → 只在需要时占用 context
-                              → 可热重载、可组合、可测试</div>
-
-  <div class="callout-success callout">
-    <strong>📊 实证支持</strong>：Databricks 基准测试证明，这种极简策略在真实百万行代码库上有效。Pi 每轮发送约 3 倍少的 context，成本降低 2 倍以上，质量保持不变。
+  <p>Armin Ronacher 提出的理论：</p>
+  <div class="card">
+    <p><strong>Harness 应该随模型能力增长而收缩</strong></p>
+    <p style="margin-top:0.5rem;">模型越强，需要的框架干预越少。Pi 的设计预留了这个收缩空间。</p>
   </div>
 </section>
 
-<!-- Section 12: Risks -->
-<section id="risks" class="fade-in">
-  <h2><span class="icon" style="background:var(--gradient-3)">⚠️</span> 12. 风险与局限性</h2>
-
-  <div class="pros-cons">
-    <div class="pros">
-      <h4>✅ 优势</h4>
-      <ul class="feature-list">
-        <li><span class="bullet" style="background:var(--accent-green)"></span>Token 效率业界领先</li>
-        <li><span class="bullet" style="background:var(--accent-green)"></span>扩展系统极其灵活</li>
-        <li><span class="bullet" style="background:var(--accent-green)"></span>模型无关，15+ 提供商</li>
-        <li><span class="bullet" style="background:var(--accent-green)"></span>MIT 许可，社区活跃</li>
-        <li><span class="bullet" style="background:var(--accent-green)"></span>Codemode 创新解决 token 爆炸</li>
-        <li><span class="bullet" style="background:var(--accent-green)"></span>Durable 支持 always-on 场景</li>
-        <li><span class="bullet" style="background:var(--accent-green)"></span>多种集成模式 (CLI/RPC/SDK)</li>
-        <li><span class="bullet" style="background:var(--accent-green)"></span>Earendil 资金充足，方向清晰</li>
-      </ul>
-    </div>
-    <div class="cons">
-      <h4>❌ 风险</h4>
-      <ul class="feature-list">
-        <li><span class="bullet" style="background:var(--accent-red)"></span>无内置安全护栏，生产环境风险</li>
-        <li><span class="bullet" style="background:var(--accent-red)"></span>Pi Durable API 仍为实验性</li>
-        <li><span class="bullet" style="background:var(--accent-red)"></span>学习曲线陡峭（类 Neovim）</li>
-        <li><span class="bullet" style="background:var(--accent-red)"></span>未来增值功能可能 Fair Source 许可</li>
-        <li><span class="bullet" style="background:var(--accent-red)"></span>Agent 生成的低质量 PR 影响维护效率</li>
-        <li><span class="bullet" style="background:var(--accent-red)"></span>SQLite 默认存储不保证断电持久</li>
-        <li><span class="bullet" style="background:var(--accent-red)"></span>Bedrock 上 prompt caching 可能不生效</li>
-        <li><span class="bullet" style="background:var(--accent-red)"></span>团队规模小，关键人风险</li>
-      </ul>
-    </div>
+<!-- SECTION 12: RISKS -->
+<section>
+  <h2>12. 风险与局限性</h2>
+  
+  <div class="table-wrap">
+    <table>
+      <tr><th>风险</th><th>概率</th><th>缓解措施</th></tr>
+      <tr><td>模型提供商锁定</td><td>中</td><td>多模型支持已实现</td></tr>
+      <tr><td>社区分裂</td><td>低</td><td>MIT 许可保证自由</td></tr>
+      <tr><td>商业竞争</td><td>高</td><td>极简定位差异化</td></tr>
+      <tr><td>技术债务</td><td>中</td><td>快速迭代需持续重构</td></tr>
+    </table>
   </div>
 </section>
 
-<!-- Section 13: Conclusion -->
-<section id="conclusion" class="fade-in">
-  <h2><span class="icon" style="background:var(--gradient-1)">🎯</span> 13. 结论与展望</h2>
-
-  <div class="highlight-box">
-    <h3>核心判断</h3>
-    <p>Pi Coding Agent v1.4.0 代表了 AI coding agent 领域一股重要的<strong>反潮流力量</strong>：在所有人都在往 harness 里塞更多功能时，Pi 证明了<strong>极简 + 可扩展</strong>的路线不仅可行，而且在成本和效率上有结构性优势。</p>
+<!-- SECTION 13: CONCLUSION -->
+<section>
+  <h2>13. 结论与展望</h2>
+  
+  <h3>核心判断</h3>
+  <div class="card">
+    <p><strong>Pi 证明了极简主义在 Agent 领域的可行性</strong></p>
+    <p style="margin-top:0.5rem;">通过 &lt;1K tokens 的系统提示和 4 个默认工具，Pi 实现了与功能更丰富的竞品相当甚至更优的性能，同时成本降低 2 倍以上。</p>
   </div>
 
   <h3>三个关键洞察</h3>
-
   <div class="card-grid">
     <div class="card">
-      <h4>1. Harness 是新的成本杠杆</h4>
-      <p>Databricks 实证表明，harness 选择对成本的影响超过模型选择。Pi 的 context discipline 使其在相同质量下成本降低 2 倍以上。这意味着<strong>工程团队的 harness 选型决策比模型选型更影响底线</strong>。</p>
+      <strong>1. Harness 质量 > 模型选择</strong>
+      <p style="margin-top:0.5rem;">Databricks 测试证明，同一模型在不同 harness 下表现差异显著</p>
     </div>
     <div class="card">
-      <h4>2. Codemode 是 MCP 的正确打开方式</h4>
-      <p>Pi 没有简单地把 MCP 工具 dump 进 context，而是通过 Codemode 沙箱让模型在代码中组合工具。这解决了 MCP 的组合性问题，同时保持了 token 效率。<strong>沙箱在 harness 层而非 server 层</strong>是关键设计决策。</p>
+      <strong>2. 极简不是简陋</strong>
+      <p style="margin-top:0.5rem;">Pi 的极简是刻意设计，每个省略都有明确理由</p>
     </div>
     <div class="card">
-      <h4>3. 极简不是缺少功能，而是架构选择</h4>
-      <p>Pi 的 "缺少" 功能（sub-agents、plan mode、权限系统）是刻意为之。每个省略都降低了 prompt 开销，同时通过扩展系统保留了添加能力。<strong>这是 Neovim 哲学在 AI agent 领域的复现</strong>。</p>
+      <strong>3. 开源生态的力量</strong>
+      <p style="margin-top:0.5rem;">110K+ stars 证明了社区对极简哲学的认同</p>
     </div>
   </div>
 
   <h3>展望</h3>
-
-  <ul class="feature-list">
-    <li><span class="bullet"></span><strong>Pi Durable 成熟化</strong>：从实验性到生产级，SQLite 持久性保证、KV cache 恢复等</li>
-    <li><span class="bullet"></span><strong>Fair Source 增值层</strong>：Earendil 的商业化路径，核心保持 MIT</li>
-    <li><span class="bullet"></span><strong>Cloudflare 深度集成</strong>：PiHarness + Durable Object 成为 always-on agent 的标准部署模式</li>
-    <li><span class="bullet"></span><strong>社区 fork 分化</strong>：Oh My Pi (全功能) vs Pi (极简) 的路线之争将持续</li>
-    <li><span class="bullet"></span><strong>企业采用</strong>：需要补充安全护栏层才能进入受监管环境</li>
-  </ul>
+  <p>随着模型能力持续提升，Pi 的"Grow the Harness"理论将得到更多验证。极简主义可能成为 Agent 设计的主流范式。</p>
 </section>
 
-<!-- References -->
-<section class="fade-in">
-  <h2><span class="icon" style="background:var(--gradient-2)">📚</span> 参考资料</h2>
-
-  <ul class="feature-list">
-    <li><span class="bullet"></span><a href="https://pi.dev/changelog/releases/1.4.0" style="color:var(--accent-blue)">Pi 1.4.0 Official Release Notes</a> — pi.dev</li>
-    <li><span class="bullet"></span><a href="https://github.com/earendil-works/pi/releases/tag/v1.4.0" style="color:var(--accent-blue)">GitHub Release v1.4.0</a> — earendil-works/pi</li>
-    <li><span class="bullet"></span><a href="https://aiwiki.ai/wiki/pi_agent" style="color:var(--accent-blue)">Pi (agent framework) — AI Wiki</a> — 综合百科</li>
-    <li><span class="bullet"></span><a href="https://www.databricks.com/blog/benchmarking-coding-agents-databricks-multi-million-line-codebase" style="color:var(--accent-blue)">Benchmarking Coding Agents on Databricks' Multi-Million Line Codebase</a> — Databricks, 2026-07</li>
-    <li><span class="bullet"></span><a href="https://c-daniele.github.io/en/posts/2026-05-18-coding-harness-comparison" style="color:var(--accent-blue)">Claude Code, OpenCode, and π: anatomy of a trivial request</a> — cd4n1's blog</li>
-    <li><span class="bullet"></span><a href="https://developers.cloudflare.com/changelog/post/2026-10-22-pi-harness-pi-1-4" style="color:var(--accent-blue)">Agents SDK now supports Pi 1.4</a> — Cloudflare</li>
-    <li><span class="bullet"></span><a href="https://www.tensorlake.ai/blog/best-ai-coding-agents-2026" style="color:var(--accent-blue)">Best AI Coding Agents in 2026: 14-Day Test</a> — Tensorlake</li>
-    <li><span class="bullet"></span><a href="https://pi.dev/docs/latest/codemode" style="color:var(--accent-blue)">Codemode Documentation</a> — pi.dev</li>
-    <li><span class="bullet"></span><a href="https://flaviocopes.com/pi-durable" style="color:var(--accent-blue)">How to build agents that survive crashes with Pi Durable</a> — Flavio Copes</li>
-    <li><span class="bullet"></span><a href="https://redreamality.com/blog/pi-1-0-codemode-mcp-minimal-harness" style="color:var(--accent-blue)">Pi 1.0: Folding MCP into Codemode</a> — redreamality.com</li>
-  </ul>
-</section>
-
-</div>
-
-<footer>
-  <p>📊 Pi Coding Agent v1.4.0 深度技术分析报告 | 生成于 2026-10-30</p>
-  <p>数据来源：官方文档、GitHub、Databricks、Cloudflare、社区研究 | 由 二娃 🦊 深度分析制作</p>
+<!-- FOOTER -->
+<footer class="footer">
+  <p>分析时间：2026-10-30 | 数据来源：GitHub、Databricks 基准测试、Tensorlake 验证报告</p>
+  <p style="margin-top:0.5rem;">本报告遵循 MONO 数据报告体系设计规范</p>
 </footer>
 
-<script>
-// Scroll animation
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-    }
-  });
-}, { threshold: 0.1 });
-
-document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-</script>
-
+</div>
 </body>
 </html>
